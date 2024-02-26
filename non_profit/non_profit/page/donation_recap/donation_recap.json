@@ -1,0 +1,26 @@
+{
+ "content": null,
+ "creation": "2024-02-01 14:14:36.240402",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2024-02-01 14:14:36.240402",
+ "modified_by": "Administrator",
+ "module": "Non Profit",
+ "name": "donation-recap",
+ "owner": "Administrator",
+ "page_name": "donation-recap",
+ "roles": [
+  {
+   "role": "Non Profit Manager"
+  },
+  {
+   "role": "Administrator"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Donation Recap"
+}

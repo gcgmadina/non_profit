@@ -82,10 +82,11 @@
    "link_fieldname": "donor"
   }
  ],
- "modified": "2021-02-17 16:36:33.470731",
+ "modified": "2024-02-07 09:37:21.015289",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Donor",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {
@@ -105,6 +106,7 @@
  "restrict_to_domain": "Non Profit",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "title_field": "donor_name",
  "track_changes": 1
 }

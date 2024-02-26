@@ -203,3 +203,5 @@ standard_portal_menu_items = [
 	{"title": _("Certification"), "route": "/certification",
 	 "reference_doctype": "Certification Application", "role": "Non Profit Portal User"},
 ]
+
+website_route_rules = [{'from_route': '/fundraising/<path:app_path>', 'to_route': 'fundraising'}, {'from_route': '/Fundraising/<path:app_path>', 'to_route': 'Fundraising'},]

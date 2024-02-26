@@ -7,12 +7,18 @@
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
+  "donation_type",
   "donor",
-  "donor_name",
-  "email",
+  "fullname",
   "column_break_4",
   "company",
+  "item_type",
   "date",
+  "donation_item_type",
+  "item_name",
+  "item_amount",
+  "donation_event_section",
+  "donation_event",
   "payment_details_section",
   "paid",
   "amount",
@@ -26,26 +32,7 @@
    "fieldname": "donor",
    "fieldtype": "Link",
    "label": "Donor",
-   "options": "Donor",
-   "reqd": 1
-  },
-  {
-   "fetch_from": "donor.donor_name",
-   "fieldname": "donor_name",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Donor Name",
-   "read_only": 1
-  },
-  {
-   "fetch_from": "donor.email",
-   "fieldname": "email",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "label": "Email",
-   "read_only": 1
+   "options": "Donor"
   },
   {
    "fieldname": "column_break_4",
@@ -58,6 +45,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.donation_type == 'Infaq' || doc.donation_type == 'Zakat Mal' || doc.donation_type == 'Specific Donation' || doc.item_type == 'Uang'",
    "fieldname": "payment_details_section",
    "fieldtype": "Section Break",
    "label": "Payment Details"
@@ -65,13 +53,15 @@
   {
    "fieldname": "amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Amount",
-   "reqd": 1
+   "mandatory_depends_on": "eval:doc.item_type==\"Uang\""
   },
   {
    "fieldname": "mode_of_payment",
    "fieldtype": "Link",
    "label": "Mode of Payment",
+   "mandatory_depends_on": "eval:doc.item_type==\"Uang\"",
    "options": "Mode of Payment"
   },
   {
@@ -112,15 +102,66 @@
   {
    "fieldname": "column_break_12",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "donation_type",
+   "fieldtype": "Link",
+   "label": "Donation Type",
+   "options": "Donation Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "item_type",
+   "fieldtype": "Select",
+   "label": "Item Type",
+   "options": "Uang\nBarang",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.donation_type == 'Hibah' || doc.item_type == 'Barang'",
+   "fieldname": "donation_item_type",
+   "fieldtype": "Section Break",
+   "label": "Donation Item Type"
+  },
+  {
+   "fieldname": "item_name",
+   "fieldtype": "Small Text",
+   "label": "Item Name",
+   "mandatory_depends_on": "eval:doc.item_type==\"Barang\""
+  },
+  {
+   "fieldname": "item_amount",
+   "fieldtype": "Float",
+   "label": "Item Amount",
+   "mandatory_depends_on": "eval:doc.item_type==\"Barang\""
+  },
+  {
+   "depends_on": "eval: doc.donation_type == 'Specific Donation'",
+   "fieldname": "donation_event_section",
+   "fieldtype": "Section Break",
+   "label": "Donation Event Section"
+  },
+  {
+   "fieldname": "donation_event",
+   "fieldtype": "Link",
+   "label": "Donation Event",
+   "mandatory_depends_on": "eval:doc.donation_type==\"Specific Donation\"",
+   "options": "Event"
+  },
+  {
+   "fieldname": "fullname",
+   "fieldtype": "Data",
+   "label": "Fullname"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-03-16 17:18:45.611741",
+ "modified": "2024-02-22 09:35:56.383821",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Donation",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {
@@ -150,11 +191,45 @@
    "share": 1,
    "submit": 1,
    "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Non Profit Member",
+   "share": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Non Profit Accounting",
+   "select": 1,
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Non Profit Chief",
+   "share": 1
   }
  ],
- "search_fields": "donor_name, email",
+ "search_fields": "fullname, donor",
  "sort_field": "modified",
  "sort_order": "DESC",
- "title_field": "donor_name",
+ "states": [],
+ "title_field": "fullname",
  "track_changes": 1
 }

@@ -1,0 +1,61 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-02-05 14:56:42.535631",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "donation_type",
+  "total_amount",
+  "donation_allocation"
+ ],
+ "fields": [
+  {
+   "fieldname": "donation_type",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Donation Type",
+   "options": "Donation Type",
+   "reqd": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Total Amount",
+   "reqd": 1
+  },
+  {
+   "fieldname": "donation_allocation",
+   "fieldtype": "Table",
+   "label": "Donation Allocation",
+   "options": "Donation Allocations"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2024-02-05 16:44:55.133778",
+ "modified_by": "Administrator",
+ "module": "Non Profit",
+ "name": "Allocation",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

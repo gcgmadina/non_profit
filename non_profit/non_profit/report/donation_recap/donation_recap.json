@@ -1,0 +1,30 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "creation": "2024-02-02 11:20:03.024479",
+ "disable_prepared_report": 0,
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "modified": "2024-02-02 11:20:03.024479",
+ "modified_by": "Administrator",
+ "module": "Non Profit",
+ "name": "Donation Recap",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "query": "SELECT donation_type, SUM(amount) as amount FROM tabDonation GROUP BY donation_type;",
+ "ref_doctype": "Donation",
+ "report_name": "Donation Recap",
+ "report_type": "Query Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  },
+  {
+   "role": "Non Profit Manager"
+  }
+ ]
+}

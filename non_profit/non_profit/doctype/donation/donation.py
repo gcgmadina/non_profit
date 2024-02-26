@@ -221,3 +221,8 @@ def notify_failure(log):
 		sendmail_to_system_managers(_('[Important] [ERPNext] Razorpay donation webhook failed, please check.'), content)
 	except Exception:
 		pass
+
+@frappe.whitelist()
+def get_fullname(donor):
+	donor_data = frappe.get_doc('Donor', donor)
+	return donor_data.get('donor_name')
