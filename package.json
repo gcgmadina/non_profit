@@ -4,6 +4,7 @@
   "description": "A Non profit app built on top of Frappe framework & ERPNext.",
   "main": "index.js",
   "dependencies": {
+    "@ionic/vue-router": "^7.7.3",
     "argparse": "^2.0.1",
     "case-anything": "^2.1.13",
     "classnames": "^2.5.1",
@@ -72,7 +73,6 @@
     "ws": "^8.11.0",
     "xmlhttprequest-ssl": "^2.0.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "cd fundraising && yarn install",
