@@ -12,7 +12,7 @@ def get_total_amount():
                                             {"item_type": ("!=", "Barang"),
                                              "date": ("between", [first, today])},
                                             "sum(amount) as total")
-        return str(total_amount or 0)  # Return 0 if total_amount is Non
+        return total_amount or 0  # Return 0 if total_amount is Non
     except Exception as e:
         frappe.log_error("Error in get_total_amount: {0}".format(str(e)))
         return 0  # Return 0 in case of an error
