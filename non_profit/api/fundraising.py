@@ -21,3 +21,35 @@ def get_total_amount():
 def get_jumatan_donations():
     total_amount = frappe.db.get_value("Donation", {"donation_type": "Jumatan"}, "amount")
     return total_amount
+
+@frappe.whitelist(allow_guest=True)
+def get_event_list():
+    try:
+        # Use frappe.get_list to get list of events
+        events = frappe.get_list("Event", 
+                                 filters={"starts_on": (">", datetime.date.today()),
+                                          "status": "Open",
+                                          "event_category": "Event",
+                                          "event_type": "Public"},
+                                 fields=["subject", "thumbnail", "starts_on", "ends_on", "description"],
+                                 order_by="starts_on asc")
+        return events
+    except Exception as e:
+        frappe.log_error("Error in get_event_list: {0}".format(str(e)))
+        return []
+    
+@frappe.whitelist(allow_guest=True)
+def get_donation_events():
+    try:
+        # Use frappe.get_list to get list of events
+        events = frappe.get_list("Event", 
+                                 filters={"ends_on": (">", datetime.date.today()),
+                                          "status": "Open",
+                                          "event_category": "Donation",
+                                          "event_type": "Public"},
+                                 fields=["subject", "thumbnail", "starts_on", "ends_on", "description"],
+                                 order_by="starts_on asc")
+        return events
+    except Exception as e:
+        frappe.log_error("Error in get_donation_events: {0}".format(str(e)))
+        return []
