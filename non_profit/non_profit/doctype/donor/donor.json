@@ -11,6 +11,7 @@
   "column_break_5",
   "donor_type",
   "email",
+  "phone_number",
   "image",
   "address_contacts",
   "address_html",
@@ -73,6 +74,11 @@
    "fieldname": "contact_html",
    "fieldtype": "HTML",
    "label": "Contact HTML"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Phone",
+   "label": "Phone Number"
   }
  ],
  "image_field": "image",
@@ -82,7 +88,7 @@
    "link_fieldname": "donor"
   }
  ],
- "modified": "2024-02-07 09:37:21.015289",
+ "modified": "2024-03-14 14:27:50.315727",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Donor",

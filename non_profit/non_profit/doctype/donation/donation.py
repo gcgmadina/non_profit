@@ -226,3 +226,8 @@ def notify_failure(log):
 def get_fullname(donor):
 	donor_data = frappe.get_doc('Donor', donor)
 	return donor_data.get('donor_name')
+
+@frappe.whitelist()
+def get_phone(donor):
+	donor_data = frappe.get_doc('Donor', donor)
+	return donor_data.get('phone_number')

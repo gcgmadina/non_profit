@@ -10,6 +10,7 @@
   "donation_type",
   "donor",
   "fullname",
+  "phone_number",
   "column_break_4",
   "company",
   "item_type",
@@ -25,7 +26,8 @@
   "mode_of_payment",
   "column_break_12",
   "payment_id",
-  "amended_from"
+  "amended_from",
+  "evidance_of_transfer"
  ],
  "fields": [
   {
@@ -152,12 +154,22 @@
    "fieldname": "fullname",
    "fieldtype": "Data",
    "label": "Fullname"
+  },
+  {
+   "fieldname": "phone_number",
+   "fieldtype": "Data",
+   "label": "Phone Number"
+  },
+  {
+   "fieldname": "evidance_of_transfer",
+   "fieldtype": "Attach Image",
+   "label": "Evidance of Transfer"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2024-02-22 09:35:56.383821",
+ "modified": "2024-04-02 12:22:55.440218",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Donation",

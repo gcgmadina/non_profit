@@ -3,7 +3,7 @@
 
 frappe.ui.form.on('Donation', {
 	refresh: function(frm) {
-		if (frm.doc.docstatus === 1 && !frm.doc.paid && frm.doc.item_type != 'Barang') {
+		if (frm.doc.docstatus === 1 && frm.doc.item_type != 'Barang') {
 			frm.add_custom_button(__('Create Payment Entry'), function() {
 				frm.events.make_payment_entry(frm);
 			});
@@ -53,6 +53,7 @@ frappe.ui.form.on('Donation', {
 	donor: function(frm) {
 		if (frm.doc.donor != "hambaa@email.com"){
 			frm.events.get_fullname(frm);
+			frm.events.get_phone(frm);
 		}
 		// frm.events.get_fullname(frm);
 		// if (frm.doc.donor || frm.doc.donor != '') {
@@ -69,6 +70,20 @@ frappe.ui.form.on('Donation', {
 				},
 				callback: function(r) {
 					frm.set_value('fullname', r.message);
+				}
+			});
+		}
+	},
+
+	get_phone: function(frm) {
+		if (frm.doc.donor != ""){
+			return frappe.call({
+				method: 'non_profit.non_profit.doctype.donation.donation.get_phone',
+				args: {
+					'donor': frm.doc.donor
+				},
+				callback: function(r) {
+					frm.set_value('phone_number', r.message);
 				}
 			});
 		}
