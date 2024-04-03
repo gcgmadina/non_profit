@@ -178,6 +178,17 @@ def get_donation_by_id(donation_id):
     except Exception as e:
         frappe.log_error("Error in get_donation_by_id: {0}".format(str(e)))
         return None
+    
+@frappe.whitelist(allow_guest=True)
+def upload_evidence(donation_id, evidence):
+    try:
+        donation = frappe.get_doc("Donation", donation_id)
+        donation.evidance_of_transfer = evidence
+        donation.save(ignore_permissions=True)
+        return donation.name
+    except Exception as e:
+        frappe.log_error("Error in upload_evidence: {0}".format(str(e)))
+        return None
 
 @frappe.whitelist()
 def new_event(subject, event_category, event_type, starts_on, is_donation_event, thumbnail=None, description=None, status="open", ends_on=None):
