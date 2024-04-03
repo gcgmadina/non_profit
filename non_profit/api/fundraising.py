@@ -159,12 +159,7 @@ def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@e
 @frappe.whitelist()
 def get_user_donations(user):
     try:
-        donations = frappe.get_list("Donation", filters={"owner": user}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company"])
-        for donation in donations:
-            if donation["docstatus"] == 0:
-                donation["docstatus"] = "Draft"
-            else:
-                donation["docstatus"] = "Submitted"
+        donations = frappe.get_list("Donation", filters={"owner": user}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"])
         return donations
     except Exception as e:
         frappe.log_error("Error in get_user_donations: {0}".format(str(e)))
