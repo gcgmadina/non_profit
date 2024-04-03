@@ -205,3 +205,10 @@ standard_portal_menu_items = [
 ]
 
 website_route_rules = [{'from_route': '/fundraising/<path:app_path>', 'to_route': 'fundraising'}, {'from_route': '/Fundraising/<path:app_path>', 'to_route': 'Fundraising'},]
+
+fixtures = [
+    {
+        "doctype": "Custom Field",
+        "filters": [["name", "in", ("Event-custom_thumbnail", "Event-custom_is_donation_event")]]
+	}
+]

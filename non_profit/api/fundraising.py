@@ -57,9 +57,9 @@ def get_event_list():
         events = frappe.get_list("Event", 
                                  filters={"starts_on": (">", datetime.date.today()),
                                           "status": "Open",
-                                          "event_category": "Event",
-                                          "event_type": "Public"},
-                                 fields=["name","subject", "thumbnail", 
+                                          "event_type": "Public",
+                                          "is_donation_event": 0},
+                                 fields=["name","subject", "event_thumbnail", 
                                          "DATE_FORMAT(starts_on, '%D %M %Y') as starts_on", 
                                          "DATE_FORMAT(ends_on, '%D %M %Y') as ends_on", 
                                          "description"],
@@ -85,9 +85,9 @@ def get_donation_events():
         events = frappe.get_list("Event", 
                                  filters={"ends_on": (">", datetime.date.today()),
                                           "status": "Open",
-                                          "event_category": "Donation",
-                                          "event_type": "Public"},
-                                 fields=["name","subject", "thumbnail", 
+                                          "event_type": "Public",
+                                          "is_donation_event": 1},
+                                 fields=["name","subject", "event_thumbnail", 
                                          "DATE_FORMAT(starts_on, '%D %M %Y') as starts_on", 
                                          "DATE_FORMAT(ends_on, '%D %M %Y') as ends_on", 
                                          "description"],
@@ -180,7 +180,7 @@ def get_donation_by_id(donation_id):
         return None
 
 @frappe.whitelist()
-def new_event(subject, event_category, event_type, starts_on, thumbnail=None, description=None, status="open", ends_on=None):
+def new_event(subject, event_category, event_type, starts_on, is_donation_event, thumbnail=None, description=None, status="open", ends_on=None):
     try:
         event = frappe.new_doc("Event")
         event.update({
@@ -189,9 +189,10 @@ def new_event(subject, event_category, event_type, starts_on, thumbnail=None, de
             "event_type": event_type,
             "starts_on": starts_on,
             "ends_on": ends_on,
-            "thumbnail": thumbnail,
+            "event_thumbnail": thumbnail,
             "status": status,
-            "description": description
+            "description": description,
+            "is_donation_event": is_donation_event
         })
         event.insert(ignore_permissions=True)
         return event.name
