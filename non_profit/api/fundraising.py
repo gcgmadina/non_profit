@@ -2,7 +2,9 @@ import frappe
 from frappe.utils import get_datetime_str, format_date
 from frappe.utils.file_manager import save_file
 import datetime
+from datetime import timedelta
 import json
+from faker import Faker
 
 @frappe.whitelist(allow_guest=True)
 def get_total_amount():
@@ -55,10 +57,11 @@ def get_event_list():
     try:
         # Use frappe.get_list to get list of events
         events = frappe.get_list("Event", 
-                                 filters={"starts_on": (">", datetime.date.today()),
+                                 filters={# "starts_on": (">=", datetime.date.today()),
                                           "status": "Open",
                                           "event_type": "Public",
                                           "is_donation_event": 0},
+                                 or_filters=[ ["starts_on", ">=", datetime.date.today()], ["ends_on", ">=", datetime.date.today()] ],
                                  fields=["name","subject", "event_thumbnail", 
                                          "DATE_FORMAT(starts_on, '%D %M %Y') as starts_on", 
                                          "DATE_FORMAT(ends_on, '%D %M %Y') as ends_on", 
@@ -83,7 +86,7 @@ def get_donation_events():
     try:
         # Use frappe.get_list to get list of events
         events = frappe.get_list("Event", 
-                                 filters={"ends_on": (">", datetime.date.today()),
+                                 filters={"ends_on": (">=", datetime.date.today()),
                                           "status": "Open",
                                           "event_type": "Public",
                                           "is_donation_event": 1},
@@ -107,8 +110,6 @@ def get_company_for_donations():
 @frappe.whitelist(allow_guest=True)
 def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None ):
     try:
-        print("donor: ", donor)
-        print("fullname: ", fullname)
         company = get_company_for_donations()
         donation = frappe.new_doc("Donation")
         donation.update({
@@ -216,3 +217,42 @@ def upload_file(file):
     except Exception as e:
         frappe.log_error("Error in upload_file: {0}".format(str(e)))
         return None
+    
+# Faker
+@frappe.whitelist()
+def populate_donation_data():
+    fake = Faker(['id_ID'])
+    for i in range(10):
+        donation_type = "Zakat Mal"
+        date = fake.date_this_month()
+        amount = fake.random_int(min=10000, max=1000000)
+        mode_of_payment = "Cash"
+        phone = fake.phone_number()
+        # donor = None
+        fullname = fake.name()
+        item_type = "Uang"
+        naming_series = 'NPO-DTN-.YYYY.-'
+        donation_event = None
+        new_donation(donation_type=donation_type, date=date, amount=amount, mode_of_payment=mode_of_payment, phone=phone, fullname=fullname, item_type=item_type, naming_series=naming_series, donation_event=donation_event)
+
+@frappe.whitelist()
+def populate_event_data():
+    fake = Faker(['id_ID'])
+    for i in range(10):
+        subject = fake.sentence(nb_words=5, variable_nb_words=True)
+        event_category = "Event"
+        event_type = "Public"
+        starts_on = fake.date_this_month()
+        is_donation_event = fake.random_int(min=0, max=1)
+        thumbnail = None
+        description = fake.text()
+        status = "Open"
+
+        if is_donation_event == 0:  
+            ends_on = fake.date_between_dates(date_start=starts_on, date_end=starts_on + timedelta(days=30)) 
+            if ends_on == starts_on:  
+                ends_on = None
+        else:  
+            ends_on = fake.date_between_dates(date_start=starts_on + timedelta(days=1))
+
+        new_event(subject=subject, event_category=event_category, event_type=event_type, starts_on=starts_on, is_donation_event=is_donation_event, thumbnail=thumbnail, description=description, status=status, ends_on=ends_on)
