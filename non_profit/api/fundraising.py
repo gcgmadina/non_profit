@@ -6,6 +6,19 @@ from datetime import timedelta
 import json
 from faker import Faker
 
+@frappe.whitelist()
+def get_user_info() -> dict:
+    try:
+        # user = frappe.get_doc("User", frappe.session.user)
+        current_user = frappe.session.user
+        user = frappe.db.get_value("User", current_user, ["name", "first_name", "full_name", "user_image", "role_profile_name"]
+                                   , as_dict=True)
+        user["roles"] = frappe.get_roles(current_user)
+        return user
+    except Exception as e:
+        frappe.log_error("Error in get_user_info: {0}".format(str(e)))
+        return None
+
 @frappe.whitelist(allow_guest=True)
 def get_total_amount():
     today = datetime.date.today()
@@ -72,7 +85,7 @@ def get_event_list():
         frappe.log_error("Error in get_event_list: {0}".format(str(e)))
         return []
     
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_event_by_id(event_id):
     try:
         event = frappe.get_doc("Event", event_id)
@@ -160,13 +173,14 @@ def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@e
 @frappe.whitelist()
 def get_user_donations(user):
     try:
+        print("User: ", user)
         donations = frappe.get_list("Donation", filters={"owner": user}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"])
         return donations
     except Exception as e:
         frappe.log_error("Error in get_user_donations: {0}".format(str(e)))
         return []
     
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_donation_by_id(donation_id):
     try:
         donation = frappe.get_doc("Donation", donation_id)
