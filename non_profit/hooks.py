@@ -210,5 +210,13 @@ fixtures = [
     {
         "doctype": "Custom Field",
         "filters": [["name", "in", ("Event-custom_thumbnail", "Event-custom_is_donation_event")]]
+	},
+    {
+        "doctype": "Role",
+        "filters": [["name", "in", ("Non Profit Accounting", "Non Profit Chief", "Non Profit Secretary")]]
+	},
+    {
+        "doctype": "Custom DocPerm",
+        "filters": [["role", "in", ("Non Profit Accounting", "Non Profit Chief", "Non Profit Secretary", "Guest", "Non Profit Manager")]]
 	}
 ]
