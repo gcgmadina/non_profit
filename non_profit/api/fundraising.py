@@ -11,7 +11,7 @@ def get_user_info() -> dict:
     try:
         # user = frappe.get_doc("User", frappe.session.user)
         current_user = frappe.session.user
-        user = frappe.db.get_value("User", current_user, ["name", "first_name", "full_name", "user_image", "role_profile_name"]
+        user = frappe.db.get_value("User", current_user, ["name", "first_name", "full_name", "user_image", "role_profile_name", "user_type"]
                                    , as_dict=True)
         user["roles"] = frappe.get_roles(current_user)
         return user
@@ -121,7 +121,7 @@ def get_company_for_donations():
 	return company
     
 @frappe.whitelist(allow_guest=True)
-def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None ):
+def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None, bank=None ):
     try:
         company = get_company_for_donations()
         donation = frappe.new_doc("Donation")
@@ -136,7 +136,8 @@ def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="ham
             "item_type": item_type,
             "naming_series": naming_series,
             "company": company,
-            "donation_event": donation_event
+            "donation_event": donation_event,
+            "bank": bank
         })
         donation.insert(ignore_permissions=True)
         print(donation.name)
@@ -174,9 +175,11 @@ def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@e
 def get_user_donations(user):
     try:
         if 'Non Profit Accounting' in user['data']['roles']:
-            donations = frappe.get_list("Donation", fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"])
+            donations = frappe.get_list("Donation", fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
+                                        order_by="date desc")
         else:
-            donations = frappe.get_list("Donation", filters={"owner": user['data']['name']}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"])
+            donations = frappe.get_list("Donation", filters={"owner": user['data']['name']}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
+                                        order_by="date desc")
         return donations
     except Exception as e:
         frappe.log_error("Error in get_user_donations: {0}".format(str(e)))
@@ -189,6 +192,16 @@ def get_donation_by_id(donation_id):
         return donation
     except Exception as e:
         frappe.log_error("Error in get_donation_by_id: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def submit_donation(donation_id):
+    try:
+        donation = frappe.get_doc("Donation", donation_id)
+        donation.submit()
+        return donation.name
+    except Exception as e:
+        frappe.log_error("Error in submit_donation: {0}".format(str(e)))
         return None
     
 @frappe.whitelist(allow_guest=True)
@@ -272,3 +285,52 @@ def populate_event_data():
             ends_on = fake.date_between_dates(date_start=starts_on + timedelta(days=1))
 
         new_event(subject=subject, event_category=event_category, event_type=event_type, starts_on=starts_on, is_donation_event=is_donation_event, thumbnail=thumbnail, description=description, status=status, ends_on=ends_on)
+
+@frappe.whitelist()
+def get_bank_list():
+    try:
+        banks = frappe.get_list("Bank", fields=["name", "swift_number"])
+        return banks
+    except Exception as e:
+        frappe.log_error("Error in get_bank_list: {0}".format(str(e)))
+        return []
+
+@frappe.whitelist()
+def get_bank_account_list():
+    try:
+        bank_accounts = frappe.get_list("Bank Account", fields=["name", "account_name", "bank", "bank_account_no"])
+        return bank_accounts
+    except Exception as e:
+        frappe.log_error("Error in get_bank_account_list: {0}".format(str(e)))
+        return []
+
+@frappe.whitelist()
+def new_bank_account(bank_name, account_name, account_number, coa_account = "Bank Masjid", is_company_account = 1 ):
+    try:
+        account = frappe.db.get_value("Account", {"account_name": coa_account}, "name")
+
+        bank = frappe.new_doc("Bank Account")
+        bank.update({
+            "bank": bank_name,
+            "bank_account_no": account_number,
+            "account_name": account_name,
+            "account": account,
+            "is_company_account": is_company_account
+        })
+        bank.insert(ignore_permissions=True)
+        return bank.name
+    except Exception as e:
+        frappe.log_error("Error in new_bank_account: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist(allow_guest=True)
+def get_bank_account_by_id(bank_account_id):
+    try:
+        bank_account = frappe.get_doc("Bank Account", bank_account_id)
+        return bank_account
+    except Exception as e:
+        # Mengembalikan pesan kesalahan jika terjadi kesalahan
+        frappe.log_error(_("Error in getting bank account: {0}").format(str(e)))
+        return {
+            "error": "An error occurred while getting bank account."
+        }
