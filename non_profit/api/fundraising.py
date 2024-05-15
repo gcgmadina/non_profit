@@ -323,14 +323,39 @@ def new_bank_account(bank_name, account_name, account_number, coa_account = "Ban
         frappe.log_error("Error in new_bank_account: {0}".format(str(e)))
         return None
     
-@frappe.whitelist(allow_guest=True)
+@frappe.whitelist()
 def get_bank_account_by_id(bank_account_id):
     try:
         bank_account = frappe.get_doc("Bank Account", bank_account_id)
         return bank_account
     except Exception as e:
         # Mengembalikan pesan kesalahan jika terjadi kesalahan
-        frappe.log_error(_("Error in getting bank account: {0}").format(str(e)))
+        frappe.log_error("Error in get_bank_account_by_id: {0}".format(str(e)))
         return {
             "error": "An error occurred while getting bank account."
         }
+
+@frappe.whitelist()
+def edit_bank_account(bank_account):
+    try:
+        bank_account = json.loads(bank_account)
+        bank_account_doc = frappe.get_doc("Bank Account", bank_account["name"])
+        bank_account_doc.update({
+            "bank": bank_account["bank"],
+            "bank_account_no": bank_account["bank_account_no"],
+            "account_name": bank_account["account_name"]
+        })
+        bank_account_doc.save(ignore_permissions=True)
+        return bank_account_doc.name
+    except Exception as e:
+        frappe.log_error("Error in edit_bank_account: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def delete_document(doctype, docname):
+    try:
+        frappe.delete_doc(doctype, docname, ignore_permissions=True)
+        return True
+    except Exception as e:
+        frappe.log_error("Error in delete_document: {0}".format(str(e)))
+        return False
