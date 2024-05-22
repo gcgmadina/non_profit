@@ -286,6 +286,8 @@ def populate_event_data():
 
         new_event(subject=subject, event_category=event_category, event_type=event_type, starts_on=starts_on, is_donation_event=is_donation_event, thumbnail=thumbnail, description=description, status=status, ends_on=ends_on)
 
+# Bank Account
+
 @frappe.whitelist()
 def get_bank_list():
     try:
@@ -359,3 +361,77 @@ def delete_document(doctype, docname):
     except Exception as e:
         frappe.log_error("Error in delete_document: {0}".format(str(e)))
         return False
+
+# Payment Entry
+
+@frappe.whitelist()
+def add_donation_payment_entry(payment_entry):
+    try:
+        donation = frappe.get_doc("Donation", payment_entry["references"][0]["reference_name"])
+
+        payment_data = frappe.get_doc({
+            "doctype": "Payment Entry",
+            **payment_entry  # Unpack dictionary ke dalam DocType
+        })
+
+        payment_data.insert()
+
+        update_donation_payment_entry(payment_data.name, donation.name)
+
+        return {"status": "success", "message": "Payment Entry created successfully", "name": payment_entry.name}
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Payment Entry creation failed")
+        return {"status": "error", "message": str(e)}
+
+def update_donation_payment_entry(payment_entry_id, donation_id):
+    try:
+        payment_entry = frappe.get_doc("Payment Entry", payment_entry_id)
+        donation = frappe.get_doc("Donation", donation_id)
+        print("paid to before:", payment_entry.paid_to)
+
+        if donation.mode_of_payment == "Cash":
+            paid_to = frappe.db.get_value("Account", {"account_name": "Kas Besar"}, "name")
+            payment_entry.update({
+                "paid_to": paid_to
+            })
+        else:
+            paid_to = frappe.db.get_value("Account", {"account_name": "Bank Masjid"}, "name")
+            if payment_entry.reference_no and payment_entry.reference_date:
+                payment_entry.update({
+                    "paid_to": paid_to,
+                    "bank_account": donation.bank,
+                    "reference_no": payment_entry.reference_no,
+                    "reference_date": payment_entry.reference_date
+                })
+            else:
+                payment_entry.update({
+                    "paid_to": paid_to,
+                    "bank_account": donation.bank,
+                    "reference_no": "-",
+                    "reference_date": datetime.date.today()
+                })
+        
+        print("paid to after", payment_entry.paid_to)
+
+        if donation.donation_type == "Infaq":
+            paid_from = frappe.db.get_value("Account", {"account_name": "Penerimaan Infaq"}, "name")
+            payment_entry.update({
+                "paid_from": paid_from
+            })
+        elif donation.donation_type in ["Zakat Mal", "Zakat Fitrah"]:
+            paid_from = frappe.db.get_value("Account", {"account_name": "Penerimaan Zakat"}, "name")
+            payment_entry.update({
+                "paid_from": paid_from
+            })
+        elif donation.donation_type in ["Fidyah", "Kaffarat"]:
+            paid_from = frappe.db.get_value("Account", {"account_name": "Penerimaan Fidyah dan Kaffarat"}, "name")
+            payment_entry.update({
+                "paid_from": paid_from
+            })
+
+        payment_entry.save()
+        payment_entry.submit()
+        # frappe.db.commit()
+    except Exception as e:
+        frappe.log_error("Error in update_payment_entry: {0}".format(str(e)))
+        return None

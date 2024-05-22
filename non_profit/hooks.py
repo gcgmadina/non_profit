@@ -209,7 +209,7 @@ website_route_rules = [{'from_route': '/fundraising/<path:app_path>', 'to_route'
 fixtures = [
     {
         "doctype": "Custom Field",
-        "filters": [["name", "in", ("Event-custom_thumbnail", "Event-custom_is_donation_event")]]
+        "filters": [["name", "in", ("Event-custom_thumbnail", "Event-custom_is_donation_event", "Donation-custom_bank")]]
 	},
     {
         "doctype": "Role",
