@@ -508,6 +508,7 @@ def add_expense(case, amount, date):
                 ]
             })
         journal_entry.insert()
+        journal_entry.submit()
         return journal_entry.name
     except Exception as e:
         frappe.log_error("Error in add_journal_entry: {0}".format(str(e)))
@@ -519,10 +520,13 @@ def get_expenses(case):
     if case == "Pembayaran Listrik":
         try:
             account = frappe.get_value("Account", {"account_name": "Biaya PLN Gudang & Kantor"}, "name")
-            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+            expenses = frappe.get_all("Journal Entry Account", 
+                                      filters={"account": account}, 
+                                      or_filters=[{"docstatus": 1}, {"docstatus": 2}],
                                       fields=["debit_in_account_currency", 
                                               "DATE_FORMAT(creation, '%D %M %Y') as creation", 
-                                              "parent"], 
+                                              "parent",
+                                              "docstatus"], 
                                       order_by="creation desc")
             for expense in expenses:
                 posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
@@ -534,10 +538,13 @@ def get_expenses(case):
     elif case == "Pembayaran Air":
         try:
             account = frappe.get_value("Account", {"account_name": "Biaya PAM Gudang & Kantor"}, "name")
-            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+            expenses = frappe.get_all("Journal Entry Account", 
+                                      filters={"account": account}, 
+                                      or_filters=[{"docstatus": 1}, {"docstatus": 2}],
                                       fields=["debit_in_account_currency", 
                                               "DATE_FORMAT(creation, '%D %M %Y') as creation", 
-                                              "parent"], 
+                                              "parent",
+                                              "docstatus"], 
                                       order_by="creation desc")
             for expense in expenses:
                 posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
@@ -549,10 +556,13 @@ def get_expenses(case):
     elif case == "Honor Penceramah":
         try:
             account = frappe.get_value("Account", {"account_name": "Honorarium Penceramah"}, "name")
-            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+            expenses = frappe.get_all("Journal Entry Account", 
+                                      filters={"account": account},
+                                      or_filters=[{"docstatus": 1}, {"docstatus": 2}], 
                                       fields=["debit_in_account_currency", 
                                               "DATE_FORMAT(creation, '%D %M %Y') as creation", 
-                                              "parent"], 
+                                              "parent",
+                                              "docstatus"], 
                                       order_by="creation desc")
             for expense in expenses:
                 posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
@@ -564,10 +574,13 @@ def get_expenses(case):
     elif case == "Biaya Kebersihan":
         try:
             account = frappe.get_value("Account", {"account_name": "Biaya Kebersihan"}, "name")
-            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+            expenses = frappe.get_all("Journal Entry Account", 
+                                      filters={"account": account},
+                                      or_filters=[{"docstatus": 1}, {"docstatus": 2}],
                                       fields=["debit_in_account_currency", 
                                               "DATE_FORMAT(creation, '%D %M %Y') as creation", 
-                                              "parent"], 
+                                              "parent",
+                                              "docstatus"], 
                                       order_by="creation desc")
             for expense in expenses:
                 posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
@@ -576,3 +589,13 @@ def get_expenses(case):
         except Exception as e:
             frappe.log_error("Error in get_expense_history: {0}".format(str(e)))
             return []
+
+@frappe.whitelist()
+def cancel_expense(journal_entry_id):
+    try:
+        journal_entry = frappe.get_doc("Journal Entry", journal_entry_id)
+        journal_entry.cancel()
+        return journal_entry.name
+    except Exception as e:
+        frappe.log_error("Error in cancel_expense: {0}".format(str(e)))
+        return None
