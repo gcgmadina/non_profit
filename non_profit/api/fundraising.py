@@ -1,6 +1,7 @@
 import frappe
 from frappe.utils import get_datetime_str, format_date
 from frappe.utils.file_manager import save_file
+from frappe import _
 import datetime
 from datetime import timedelta
 import json
@@ -435,3 +436,143 @@ def update_donation_payment_entry(payment_entry_id, donation_id):
     except Exception as e:
         frappe.log_error("Error in update_payment_entry: {0}".format(str(e)))
         return None
+
+@frappe.whitelist()
+def get_journal_entry_by_id():
+    try:
+        journal_entry = frappe.get_doc("Journal Entry", "ACC-JV-2024-00001")
+        return journal_entry
+    except Exception as e:
+        frappe.log_error("Error in get_journal_entry_by_id: {0}".format(str(e)))
+        return None
+
+@frappe.whitelist()
+def add_expense(case, amount, date):
+    try:
+        journal_entry = frappe.new_doc("Journal Entry")
+        journal_entry.update({
+            "voucher_type": "Journal Entry",
+            "company": get_company_for_donations(),
+            "posting_date": date
+        })
+        if case == "Pembayaran Listrik":
+            journal_entry.update({
+                "accounts": [
+                    {
+                        "account": "5130.001 - Biaya PLN Gudang & Kantor - Madina",
+                        "debit_in_account_currency": amount
+                    },
+                    {
+                        "account": "1121.001 - Bank Masjid - Madina",
+                        "credit_in_account_currency": amount
+                    }
+                ]
+            })
+        elif case == "Pembayaran Air":
+            journal_entry.update({
+                "accounts": [
+                    {
+                        "account": "5130.002 - Biaya PAM Gudang & Kantor - Madina",
+                        "debit_in_account_currency": amount
+                    },
+                    {
+                        "account": "1121.001 - Bank Masjid - Madina",
+                        "credit_in_account_currency": amount
+                    }
+                ]
+            })
+        elif case == "Honor Penceramah":
+            journal_entry.update({
+                "accounts": [
+                    {
+                        "account": "5130.019 - Honorarium Penceramah",
+                        "debit_in_account_currency": amount
+                    },
+                    {
+                        "account": "1121.001 - Bank Masjid - Madina",
+                        "credit_in_account_currency": amount
+                    }
+                ]
+            })
+        elif case == "Biaya Kebersihan":
+            journal_entry.update({
+                "accounts": [
+                    {
+                        "account": "5130.020 - Biaya Kebersihan",
+                        "debit_in_account_currency": amount
+                    },
+                    {
+                        "account": "1121.001 - Bank Masjid - Madina",
+                        "credit_in_account_currency": amount
+                    }
+                ]
+            })
+        journal_entry.insert()
+        return journal_entry.name
+    except Exception as e:
+        frappe.log_error("Error in add_journal_entry: {0}".format(str(e)))
+        return None
+
+@frappe.whitelist()
+def get_expenses(case):
+    print("case: ", case)
+    if case == "Pembayaran Listrik":
+        try:
+            account = frappe.get_value("Account", {"account_name": "Biaya PLN Gudang & Kantor"}, "name")
+            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+                                      fields=["debit_in_account_currency", 
+                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                              "parent"], 
+                                      order_by="creation desc")
+            for expense in expenses:
+                posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
+                expense["posting_date"] = format_date(posting_date)
+            return expenses
+        except Exception as e:
+            frappe.log_error("Error in get_expense_history: {0}".format(str(e)))
+            return []
+    elif case == "Pembayaran Air":
+        try:
+            account = frappe.get_value("Account", {"account_name": "Biaya PAM Gudang & Kantor"}, "name")
+            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+                                      fields=["debit_in_account_currency", 
+                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                              "parent"], 
+                                      order_by="creation desc")
+            for expense in expenses:
+                posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
+                expense["posting_date"] = format_date(posting_date)
+            return expenses
+        except Exception as e:
+            frappe.log_error("Error in get_expense_history: {0}".format(str(e)))
+            return []
+    elif case == "Honor Penceramah":
+        try:
+            account = frappe.get_value("Account", {"account_name": "Honorarium Penceramah"}, "name")
+            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+                                      fields=["debit_in_account_currency", 
+                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                              "parent"], 
+                                      order_by="creation desc")
+            for expense in expenses:
+                posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
+                expense["posting_date"] = format_date(posting_date)
+            return expenses
+        except Exception as e:
+            frappe.log_error("Error in get_expense_history: {0}".format(str(e)))
+            return []
+    elif case == "Biaya Kebersihan":
+        try:
+            account = frappe.get_value("Account", {"account_name": "Biaya Kebersihan"}, "name")
+            expenses = frappe.get_all("Journal Entry Account", filters={"account": account, "docstatus": 1}, 
+                                      fields=["debit_in_account_currency", 
+                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                              "parent"], 
+                                      order_by="creation desc")
+            for expense in expenses:
+                posting_date = frappe.get_value("Journal Entry", expense["parent"], "posting_date")
+                expense["posting_date"] = format_date(posting_date)
+            return expenses
+        except Exception as e:
+            frappe.log_error("Error in get_expense_history: {0}".format(str(e)))
+            return []
