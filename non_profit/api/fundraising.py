@@ -599,3 +599,76 @@ def cancel_expense(journal_entry_id):
     except Exception as e:
         frappe.log_error("Error in cancel_expense: {0}".format(str(e)))
         return None
+
+@frappe.whitelist()
+def get_item_group():
+    try:
+        item_group = frappe.get_list("Item Group", filters={"is_group": 0}, fields=["name", "parent_item_group"], order_by="name asc")
+        return item_group
+    except Exception as e:
+        frappe.log_error("Error in get_item_group: {0}".format(str(e)))
+        return []
+
+@frappe.whitelist()
+def add_item_group(item_group_name):
+    try:
+        newItemGroup = frappe.new_doc("Item Group")
+        newItemGroup.update({
+            "item_group_name": item_group_name
+        })
+        newItemGroup.insert(ignore_permissions=True)
+        return newItemGroup.name
+    except Exception as e:
+        frappe.log_error("Error in add_item_group: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def delete_item_groups(item_groups):
+    try:
+        print("item_groups: ", item_groups)
+        # item_groups = json.loads(item_groups)
+        for item_group in item_groups:
+            print("item_group: ", item_group)
+            frappe.delete_doc("Item Group", item_group["name"], ignore_permissions=True)
+        return True
+    except Exception as e:
+        frappe.log_error("Error in delete_item_groups: {0}".format(str(e)))
+        return False
+
+@frappe.whitelist()
+def get_item_by_group(item_group):
+    try:
+        items = frappe.get_list("Item", filters={"item_group": item_group}, fields=["name", "item_name"])
+        return items
+    except Exception as e:
+        frappe.log_error("Error in get_item_by_group: {0}".format(str(e)))
+        return []
+
+@frappe.whitelist()
+def get_uom():
+    try:
+        uom = frappe.get_list("UOM", fields=["name"], order_by="name asc")
+        return uom
+    except Exception as e:
+        frappe.log_error("Error in get_uom: {0}".format(str(e)))
+        return []
+
+@frappe.whitelist()
+def add_item(item_group, item):
+    # print("item_group: ", item_group)
+    # print("item: ", item)
+    try:
+        # item_group = frappe.get_doc("Item Group", item_group)
+        newItem = frappe.new_doc("Item")
+        newItem.update({
+            "item_group": item_group,
+            "item_code": item["name"],
+            "stock_uom": item["uom"]
+        })
+        print("newItem: ", newItem)
+        newItem.insert(ignore_permissions=True)
+        print("newItem after insert", newItem)
+        return newItem.name
+    except Exception as e:
+        frappe.log_error("Error in add_item: {0}".format(str(e)))
+        return None

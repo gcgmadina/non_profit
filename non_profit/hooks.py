@@ -218,5 +218,13 @@ fixtures = [
     {
         "doctype": "Custom DocPerm",
         "filters": [["role", "in", ("Non Profit Accounting", "Non Profit Chief", "Non Profit Secretary", "Guest", "Non Profit Manager")]]
-	}
+	},
+    {
+        "doctype": "Item Group",
+        "filters": [["name", "in", ("Aset Tetap", "Inventaris Umum")]]
+	},
+    {
+        "doctype": "Supplier",
+        "filters": [["name", "in", ("One Time Supplier")]]
+	},
 ]
