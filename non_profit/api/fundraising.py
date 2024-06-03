@@ -643,6 +643,47 @@ def get_item_by_group(item_group):
     except Exception as e:
         frappe.log_error("Error in get_item_by_group: {0}".format(str(e)))
         return []
+    
+@frappe.whitelist()
+def get_asset_category():
+    try:
+        fixed_asset_category = frappe.get_list("Asset Category", fields=["name"], order_by="name asc")
+        return fixed_asset_category
+    except Exception as e:
+        frappe.log_error("Error in get_fixed_asset_category: {0}".format(str(e)))
+        return []
+    
+@frappe.whitelist()
+def add_asset_category(asset_category):
+    try:
+        print("asset_category: ", asset_category)
+        newAssetCategory = frappe.new_doc("Asset Category")
+        fixed_asset_account = frappe.db.get_value("Account", {"account_name": "Aktiva"}, "name")
+        newAssetCategory.update({
+            "asset_category_name": asset_category
+        })
+        newAssetCategory.append('accounts', {
+            'fixed_asset_account': fixed_asset_account,
+            'company_name': get_company_for_donations()
+        })
+        newAssetCategory.insert(ignore_permissions=True)
+        return newAssetCategory.name
+    except Exception as e:
+        frappe.log_error("Error in add_asset_category: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def delete_asset_categories(asset_categories):
+    try:
+        print("asset_categories: ", asset_categories)
+        # asset_categories = json.loads(asset_categories)
+        for asset_category in asset_categories:
+            print("asset_category: ", asset_category)
+            frappe.delete_doc("Asset Category", asset_category["name"], ignore_permissions=True)
+        return True
+    except Exception as e:
+        frappe.log_error("Error in delete_asset_categories: {0}".format(str(e)))
+        return False
 
 @frappe.whitelist()
 def get_uom():
