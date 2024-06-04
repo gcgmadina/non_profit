@@ -636,9 +636,12 @@ def delete_item_groups(item_groups):
         return False
 
 @frappe.whitelist()
-def get_item_by_group(item_group):
+def get_item_by_group(item_group, asset_category=None):
     try:
-        items = frappe.get_list("Item", filters={"item_group": item_group}, fields=["name", "item_name"])
+        if item_group == 'Aset Tetap' and asset_category:
+            items = frappe.get_list("Item", filters={"item_group": item_group, "asset_category": asset_category}, fields=["name", "item_name"])
+        else:
+            items = frappe.get_list("Item", filters={"item_group": item_group}, fields=["name", "item_name"])
         return items
     except Exception as e:
         frappe.log_error("Error in get_item_by_group: {0}".format(str(e)))
@@ -696,20 +699,53 @@ def get_uom():
 
 @frappe.whitelist()
 def add_item(item_group, item):
-    # print("item_group: ", item_group)
-    # print("item: ", item)
     try:
-        # item_group = frappe.get_doc("Item Group", item_group)
         newItem = frappe.new_doc("Item")
         newItem.update({
             "item_group": item_group,
             "item_code": item["name"],
             "stock_uom": item["uom"]
         })
-        print("newItem: ", newItem)
+        if item_group == "Aset Tetap":
+            newItem.update({
+                "is_stock_item": 0,
+                "is_fixed_asset": 1,
+                "auto_create_assets": 1,
+                "asset_category": item["assetCategory"],
+                "asset_naming_series": "ACC-ASS-.YYYY.-"
+            })
         newItem.insert(ignore_permissions=True)
-        print("newItem after insert", newItem)
         return newItem.name
     except Exception as e:
         frappe.log_error("Error in add_item: {0}".format(str(e)))
+        print("Error: ", str(e))
         return None
+    
+@frappe.whitelist()
+def get_item_by_name(item_name):
+    try:
+        item = frappe.get_doc("Item", item_name)
+        return item
+    except Exception as e:
+        frappe.log_error("Error in get_item_by_name: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def add_payment_receipt(payment_receipt):
+    try:
+        # Inisiasi dokumen Payment Receipt
+        receipt_data = frappe.get_doc({
+            "doctype": "Payment Receipt",
+            **payment_receipt  # Unpack dictionary ke dalam DocType
+        })
+
+        # Insert dokumen ke dalam database
+        receipt_data.insert()
+
+        # Commit perubahan
+        frappe.db.commit()
+
+        return {"status": "success", "message": "Payment Receipt created successfully", "name": receipt_data.name}
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), "Payment Receipt creation failed")
+        return {"status": "error", "message": str(e)}
