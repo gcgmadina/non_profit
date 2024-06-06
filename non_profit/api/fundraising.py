@@ -3,6 +3,7 @@ from frappe.utils import get_datetime_str, format_date
 from frappe.utils.file_manager import save_file
 from frappe import _
 import datetime
+import time
 from datetime import timedelta
 import json
 from faker import Faker
@@ -757,4 +758,33 @@ def get_item_by_name(item_name):
         return item
     except Exception as e:
         frappe.log_error("Error in get_item_by_name: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def get_purchase_receipt():
+    try:
+        purchase_receipts = frappe.get_list("Purchase Receipt", fields=["name", "posting_date", "status", "total"], order_by="name desc")
+        return purchase_receipts
+    except Exception as e:
+        frappe.log_error("Error in def get_purchase_receipt: {0}".format(str(e)))
+        print(str(e))
+        return None
+    
+@frappe.whitelist()
+def add_purchase_receipt(items):
+    try:
+        print(type(items))
+        pr = frappe.new_doc("Purchase Receipt")
+        pr.update({
+            "naming_series": "MAT-PRE-.YYYY.-",
+            "supplier": "One Time Supplier",
+            "posting_date": datetime.date.today(),
+            "posting_time": time.localtime(),
+            "items": items
+        })
+        pr.insert(ignore_permissions=True)
+        return pr.name
+    except Exception as e:
+        frappe.log_error("Error in add_purchase_receipt: {0}".format(str(e)))
+        print("Error: ", str(e))
         return None
