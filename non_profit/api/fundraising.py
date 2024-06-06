@@ -362,6 +362,35 @@ def delete_document(doctype, docname):
     except Exception as e:
         frappe.log_error("Error in delete_document: {0}".format(str(e)))
         return False
+    
+@frappe.whitelist()
+def get_document(doctype, docname):
+    try:
+        doc = frappe.get_doc(doctype, docname, ignore_permission=True)
+        return doc
+    except Exception as e:
+        frappe.log_error("Error in get_document: {0}".format(str(e)))
+        return None
+
+@frappe.whitelist()
+def cancel_document(doctype, docname):
+    try:
+        doc = frappe.get_doc(doctype, docname)
+        doc.cancel()
+        return doc.name
+    except Exception as e:
+        frappe.log_error("Error in cancel_document: {0}".format(str(e)))
+        return None
+    
+@frappe.whitelist()
+def submit_document(doctype, docname):
+    try:
+        doc = frappe.get_doc(doctype, docname)
+        doc.submit()
+        return doc.name
+    except Exception as e:
+        frappe.log_error("Error in submit_document: {0}".format(str(e)))
+        return None
 
 # Payment Entry
 
@@ -729,23 +758,3 @@ def get_item_by_name(item_name):
     except Exception as e:
         frappe.log_error("Error in get_item_by_name: {0}".format(str(e)))
         return None
-    
-@frappe.whitelist()
-def add_payment_receipt(payment_receipt):
-    try:
-        # Inisiasi dokumen Payment Receipt
-        receipt_data = frappe.get_doc({
-            "doctype": "Payment Receipt",
-            **payment_receipt  # Unpack dictionary ke dalam DocType
-        })
-
-        # Insert dokumen ke dalam database
-        receipt_data.insert()
-
-        # Commit perubahan
-        frappe.db.commit()
-
-        return {"status": "success", "message": "Payment Receipt created successfully", "name": receipt_data.name}
-    except Exception as e:
-        frappe.log_error(frappe.get_traceback(), "Payment Receipt creation failed")
-        return {"status": "error", "message": str(e)}
