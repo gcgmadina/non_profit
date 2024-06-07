@@ -666,15 +666,17 @@ def delete_item_groups(item_groups):
         return False
 
 @frappe.whitelist()
-def get_item_by_group(item_group, asset_category=None):
+def get_item(item_group=None, asset_category=None):
     try:
-        if item_group == 'Aset Tetap' and asset_category:
+        if item_group == None and asset_category == None:
+            items = frappe.get_list("Item", fields=["name", "item_name", "item_group"], order_by="item_group asc")
+        elif item_group == 'Aset Tetap' and asset_category:
             items = frappe.get_list("Item", filters={"item_group": item_group, "asset_category": asset_category}, fields=["name", "item_name"])
         else:
             items = frappe.get_list("Item", filters={"item_group": item_group}, fields=["name", "item_name"])
         return items
     except Exception as e:
-        frappe.log_error("Error in get_item_by_group: {0}".format(str(e)))
+        frappe.log_error("Error in get_item: {0}".format(str(e)))
         return []
     
 @frappe.whitelist()
