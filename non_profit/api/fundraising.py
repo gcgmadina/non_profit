@@ -766,6 +766,22 @@ def get_item_by_name(item_name):
 def get_purchase_receipt():
     try:
         purchase_receipts = frappe.get_list("Purchase Receipt", fields=["name", "posting_date", "status", "total"], order_by="name desc")
+
+        # Kamus untuk memetakan status dari bahasa Inggris ke bahasa Indonesia
+        status_translation = {
+            "Draft": "Belum Diajukan",
+            "To Bill": "Diajukan",
+            "Completed": "Disetujui",
+            "Return Issued": "Dikembalikan",
+            "Cancelled": "Dibatalkan",
+            "Closed": "Ditutup"
+        }
+
+        # Ubah nilai status sesuai dengan kamus
+        for receipt in purchase_receipts:
+            if receipt["status"] in status_translation:
+                receipt["status"] = status_translation[receipt["status"]]
+
         return purchase_receipts
     except Exception as e:
         frappe.log_error("Error in def get_purchase_receipt: {0}".format(str(e)))
@@ -785,6 +801,7 @@ def add_purchase_receipt(items):
             "items": items
         })
         pr.insert(ignore_permissions=True)
+        pr.submit()
         return pr.name
     except Exception as e:
         frappe.log_error("Error in add_purchase_receipt: {0}".format(str(e)))
