@@ -2,6 +2,7 @@ import frappe
 from frappe.utils import get_datetime_str, format_date
 from frappe.utils.file_manager import save_file
 from frappe import _
+from frappe.model.mapper import get_mapped_doc
 import datetime
 import time
 from datetime import timedelta
@@ -806,4 +807,67 @@ def add_purchase_receipt(items):
     except Exception as e:
         frappe.log_error("Error in add_purchase_receipt: {0}".format(str(e)))
         print("Error: ", str(e))
+        return None
+
+@frappe.whitelist()
+def create_invoice_from_purchase_receipt(purchase_receipt_id, mode_of_payment):
+    try:
+        # purchase_receipt = frappe.get_doc("Purchase Receipt", purchase_receipt_id)
+        purchase_invoice = get_mapped_doc("Purchase Receipt", purchase_receipt_id, {
+            "Purchase Receipt": {
+                "doctype": "Purchase Invoice",
+                "field_map": {
+                    "supplier": "supplier",
+                },
+                "validation": {
+                    "docstatus": ["=", 1]
+                },
+            },
+            "Purchase Receipt Item": {
+                "doctype": "Purchase Invoice Item",
+                "field_map": {
+                    # "item_code": "item_code",
+                    # "item_name": "item_name",
+                    # "uom": "uom",
+                    # "rate": "rate",
+                    # "amount": "amount",
+                    # "warehouse": "warehouse",
+                    # "expense_account": "expense_account",
+                    # "cost_center": "cost_center"
+
+                    "name": "pr_detail",
+					"parent": "purchase_receipt",
+					"qty": "received_qty",
+					"purchase_order_item": "po_detail",
+					"purchase_order": "purchase_order",
+					"is_fixed_asset": "is_fixed_asset",
+					"asset_location": "asset_location",
+					"asset_category": "asset_category",
+					"wip_composite_asset": "wip_composite_asset",
+                }
+            }
+        })
+
+        if mode_of_payment == "Cash":
+            cash_account = frappe.db.get_value("Account", {"account_name": "Kas Besar"}, "name")
+            purchase_invoice.update({
+                "is_paid": 1,
+                "mode_of_payment": mode_of_payment,
+                "cash_bank_account": cash_account,
+                "paid_amount": purchase_invoice.total
+            })
+        elif mode_of_payment == "Wire Transfer":
+            bank_account = frappe.db.get_value("Account", {"account_name": "Bank Masjid"}, "name")
+            purchase_invoice.update({
+                "is_paid": 1,
+                "mode_of_payment": mode_of_payment,
+                "cash_bank_account": bank_account,
+                "paid_amount": purchase_invoice.total
+            })
+
+        purchase_invoice.insert(ignore_permissions=True)
+        purchase_invoice.submit()  
+        return purchase_invoice.name
+    except Exception as e:
+        frappe.log_error("Error in create_invoice_from_purchase_receipt: {0}".format(str(e)))
         return None
