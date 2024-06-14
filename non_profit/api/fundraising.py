@@ -14,7 +14,7 @@ def get_user_info() -> dict:
     try:
         # user = frappe.get_doc("User", frappe.session.user)
         current_user = frappe.session.user
-        user = frappe.db.get_value("User", current_user, ["name", "first_name", "full_name", "user_image", "role_profile_name", "user_type"]
+        user = frappe.db.get_value("User", current_user, ["name", "email", "first_name", "full_name", "user_image", "role_profile_name", "user_type"]
                                    , as_dict=True)
         user["roles"] = frappe.get_roles(current_user)
         return user
@@ -122,11 +122,30 @@ def get_company_for_donations():
 		from non_profit.non_profit.utils import get_company
 		company = get_company()
 	return company
+
+def create_new_donor(email, fullname):
+    try:
+        donor = frappe.new_doc("Donor")
+        donor.update({
+            "donor_name": fullname,
+            "donor_type": "Jamaah",
+            "email": email
+        })
+        donor.insert()
+    except Exception as e:
+        frappe.log_error("Error in create_new_donor: {0}".format(str(e)))
+        return None
+
     
 @frappe.whitelist(allow_guest=True)
 def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None, bank=None ):
     try:
         company = get_company_for_donations()
+
+        is_donor_exist = frappe.db.exists("Donor", donor)
+        if (not is_donor_exist):
+            create_new_donor(donor, fullname)
+
         donation = frappe.new_doc("Donation")
         donation.update({
             "donation_type": donation_type,
@@ -155,6 +174,11 @@ def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="ham
 def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Barang", naming_series='NPO-DTN-.YYYY.-'):
     try:
         company = get_company_for_donations()
+
+        is_donor_exist = frappe.db.exists("Donor", donor)
+        if (not is_donor_exist):
+            create_new_donor(donor, fullname)
+
         donation = frappe.new_doc("Donation")
         donation.update({
             "donation_type": donation_type,
