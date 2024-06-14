@@ -227,4 +227,21 @@ fixtures = [
         "doctype": "Supplier",
         "filters": [["name", "in", ("One Time Supplier")]]
 	},
+    {
+        "doctype": "Donor",
+        "filters": [["name", "in", ("hambaa@email.com")]]
+	},
+    {
+        "doctype": "Account",
+        "filters": [["name", "in", ("1121.001 - Bank Masjid - Madina", 
+                                    "4100.001 - Donasi Umum - Madina",
+                                    "4100.002 - Donasi Khusus - Madina",
+                                    "1132.002 - Penerimaan Zakat - Madina",
+                                    "1132.003 - Penerimaan Infaq - Madina",
+                                    "1132.004 - Penerimaan Fidyah - Madina",
+                                    "5130.019 - Honorarium Penceramah - Madina",
+                                    "5130.020 - Biaya Kebersihan - Madina",
+                                    "1141.001 - Persediaan Barang - Madina",
+                                    "1211.002 - Aset Belum Dibayar - Madina")]]
+	},
 ]

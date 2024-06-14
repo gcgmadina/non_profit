@@ -1,3 +1,0 @@
-var d=(o,a,n)=>new Promise((s,t)=>{var r=e=>{try{i(n.next(e))}catch(c){t(c)}},l=e=>{try{i(n.throw(e))}catch(c){t(c)}},i=e=>e.done?s(e.value):Promise.resolve(e.value).then(r,l);i((n=n.apply(o,a)).next())});import{ak as m,al as w,am as p,an as h,ao as f}from"./index.87eb2f25.js";/*!
- * (C) Ionic http://ionicframework.com - MIT License
- */const u=()=>{const o=window;o.addEventListener("statusTap",()=>{m(()=>{const a=o.innerWidth,n=o.innerHeight,s=document.elementFromPoint(a/2,n/2);if(!s)return;const t=w(s);t&&new Promise(r=>p(t,r)).then(()=>{h(()=>d(void 0,null,function*(){t.style.setProperty("--overflow","hidden"),yield f(t,300),t.style.removeProperty("--overflow")}))})})})};export{u as startStatusTap};
