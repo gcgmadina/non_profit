@@ -206,6 +206,10 @@ standard_portal_menu_items = [
 
 website_route_rules = [{'from_route': '/fundraising/<path:app_path>', 'to_route': 'fundraising'}, {'from_route': '/Fundraising/<path:app_path>', 'to_route': 'Fundraising'},]
 
+website_redirects = [
+    {"source": "/", "target": "/fundraising/"},
+]
+
 fixtures = [
     {
         "doctype": "Custom Field",
