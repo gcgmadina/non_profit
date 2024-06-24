@@ -1,0 +1,57 @@
+[
+ {
+  "bank_name": "Bank Central Asia",
+  "bank_transaction_mapping": [],
+  "docstatus": 0,
+  "doctype": "Bank",
+  "modified": "2024-05-08 11:26:18.502847",
+  "name": "Bank Central Asia",
+  "plaid_access_token": null,
+  "swift_number": "014",
+  "website": null
+ },
+ {
+  "bank_name": "Bank Mandiri",
+  "bank_transaction_mapping": [],
+  "docstatus": 0,
+  "doctype": "Bank",
+  "modified": "2024-05-08 11:26:43.348319",
+  "name": "Bank Mandiri",
+  "plaid_access_token": null,
+  "swift_number": "008",
+  "website": null
+ },
+ {
+  "bank_name": "Bank Negara Indonesia",
+  "bank_transaction_mapping": [],
+  "docstatus": 0,
+  "doctype": "Bank",
+  "modified": "2024-05-08 11:27:13.436272",
+  "name": "Bank Negara Indonesia",
+  "plaid_access_token": null,
+  "swift_number": "009",
+  "website": null
+ },
+ {
+  "bank_name": "Bank Rakyat Indonesia",
+  "bank_transaction_mapping": [],
+  "docstatus": 0,
+  "doctype": "Bank",
+  "modified": "2024-05-08 11:27:39.691858",
+  "name": "Bank Rakyat Indonesia",
+  "plaid_access_token": null,
+  "swift_number": "002",
+  "website": null
+ },
+ {
+  "bank_name": "Bank CIMB Niaga",
+  "bank_transaction_mapping": [],
+  "docstatus": 0,
+  "doctype": "Bank",
+  "modified": "2024-05-08 11:28:09.193642",
+  "name": "Bank CIMB Niaga",
+  "plaid_access_token": null,
+  "swift_number": "022",
+  "website": null
+ }
+]

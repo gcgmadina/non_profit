@@ -236,6 +236,14 @@ fixtures = [
         "filters": [["name", "in", ("hambaa@email.com")]]
 	},
     {
+        "doctype": "Donation Type",
+        "filters": [["name", "in", ("Fidyah", "Hibah", "Infaq", "Zakat Fitrah", "Zakat Mal", "Jumatan", "Wakaf", "Kaffarat", "Specific Donation")]]
+    },
+    {
+        "doctype": "Bank",
+        "filters": [["name", "in", ("Bank Central Asia", "Bank CIMB Niaga", "Bank Mandiri", "Bank Rakyat Indonesia", "Bank Negara Indonesia")]]
+    },
+    {
         "doctype": "Account",
         "filters": [["name", "in", ("1121.001 - Bank Masjid - Madina", 
                                     "4100.001 - Donasi Umum - Madina",

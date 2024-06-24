@@ -1,0 +1,74 @@
+[
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Infaq",
+  "modified": "2024-02-01 10:48:37.649616",
+  "name": "Infaq"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Zakat Fitrah",
+  "modified": "2024-02-01 10:49:05.557159",
+  "name": "Zakat Fitrah"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Zakat Mal",
+  "modified": "2024-02-01 10:50:51.813701",
+  "name": "Zakat Mal"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Wakaf",
+  "modified": "2024-02-01 10:54:40.075014",
+  "name": "Wakaf"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Fidyah",
+  "modified": "2024-02-01 10:54:48.810397",
+  "name": "Fidyah"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Specific Donation",
+  "modified": "2024-02-01 10:55:04.962139",
+  "name": "Specific Donation"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Hibah",
+  "modified": "2024-02-05 10:12:26.442931",
+  "name": "Hibah"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Jumatan",
+  "modified": "2024-03-04 10:05:17.174020",
+  "name": "Jumatan"
+ },
+ {
+  "description": null,
+  "docstatus": 0,
+  "doctype": "Donation Type",
+  "donation_type": "Kaffarat",
+  "modified": "2024-03-18 12:49:45.334905",
+  "name": "Kaffarat"
+ }
+]

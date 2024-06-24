@@ -324,7 +324,7 @@ def get_bank_list():
         frappe.log_error("Error in get_bank_list: {0}".format(str(e)))
         return []
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_bank_account_list():
     try:
         bank_accounts = frappe.get_list("Bank Account", fields=["name", "account_name", "bank", "bank_account_no"])
