@@ -3,6 +3,7 @@ from frappe.utils import get_datetime_str, format_date
 from frappe.utils.file_manager import save_file
 from frappe import _
 from frappe.model.mapper import get_mapped_doc
+from babel.dates import format_date
 import datetime
 import time
 from datetime import timedelta
@@ -71,7 +72,6 @@ def get_donation_by_type():
 @frappe.whitelist(allow_guest=True)
 def get_event_list():
     try:
-        # Use frappe.get_list to get list of events
         events = frappe.get_list("Event", 
                                  filters={# "starts_on": (">=", datetime.date.today()),
                                           "status": "Open",
@@ -79,13 +79,23 @@ def get_event_list():
                                           "is_donation_event": 0},
                                  or_filters=[ ["starts_on", ">=", datetime.date.today()], ["ends_on", ">=", datetime.date.today()] ],
                                  fields=["name","subject", "event_thumbnail", 
-                                         "DATE_FORMAT(starts_on, '%D %M %Y') as starts_on", 
-                                         "DATE_FORMAT(ends_on, '%D %M %Y') as ends_on", 
+                                         "DATE_FORMAT(starts_on, '%Y-%m-%d') as starts_on", 
+                                         "DATE_FORMAT(ends_on, '%Y-%m-%d') as ends_on", 
                                          "description"],
                                  order_by="starts_on asc")
+        
+        for event in events:
+            if event["starts_on"]:
+                event_date = datetime.datetime.strptime(event["starts_on"], '%Y-%m-%d').date()
+                event["starts_on"] = format_date(event_date, "d MMMM yyyy", locale="id")
+            if event["ends_on"]:
+                event_date = datetime.datetime.strptime(event["ends_on"], '%Y-%m-%d').date()
+                event["ends_on"] = format_date(event_date, "d MMMM yyyy", locale="id")
+
         return events
     except Exception as e:
         frappe.log_error("Error in get_event_list: {0}".format(str(e)))
+        print(str(e))
         return []
     
 @frappe.whitelist(allow_guest=True)
@@ -100,17 +110,25 @@ def get_event_by_id(event_id):
 @frappe.whitelist(allow_guest=True)
 def get_donation_events():
     try:
-        # Use frappe.get_list to get list of events
         events = frappe.get_list("Event", 
                                  filters={"ends_on": (">=", datetime.date.today()),
                                           "status": "Open",
                                           "event_type": "Public",
                                           "is_donation_event": 1},
                                  fields=["name","subject", "event_thumbnail", 
-                                         "DATE_FORMAT(starts_on, '%D %M %Y') as starts_on", 
-                                         "DATE_FORMAT(ends_on, '%D %M %Y') as ends_on", 
+                                         "DATE_FORMAT(starts_on, '%Y-%m-%d') as starts_on", 
+                                         "DATE_FORMAT(ends_on, '%Y-%m-%d') as ends_on", 
                                          "description"],
                                  order_by="ends_on asc")
+        
+        for event in events:
+            if event["starts_on"]:
+                event_date = datetime.datetime.strptime(event["starts_on"], '%Y-%m-%d').date()
+                event["starts_on"] = format_date(event_date, "d MMMM yyyy", locale="id")
+            if event["ends_on"]:
+                event_date = datetime.datetime.strptime(event["ends_on"], '%Y-%m-%d').date()
+                event["ends_on"] = format_date(event_date, "d MMMM yyyy", locale="id")
+
         return events
     except Exception as e:
         frappe.log_error("Error in get_donation_events: {0}".format(str(e)))
