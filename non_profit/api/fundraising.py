@@ -46,24 +46,29 @@ def get_jumatan_donations():
 @frappe.whitelist(allow_guest=True)
 def get_donation_by_type():
     try:
-        # Get list of all donation types
         donation_types = frappe.get_list("Donation Type", fields=["donation_type"])
-        # print(donation_types)
 
-        # Initialize a dictionary to store total amount for each donation type
         total_donations_by_type = {}
 
-        # Iterate over each donation type and calculate total amount
         for donation_type in donation_types:
-            # print(donation_type["donation_type"])
+            donation_type_name = donation_type["donation_type"]
+
             total_amount = frappe.db.get_value("Donation",
-                                               {"donation_type": donation_type["donation_type"],
+                                               {"donation_type": donation_type_name,
                                                 "item_type": ("!=", "Barang"),
-                                                "date": ("between", [datetime.date.today().replace(day=1), datetime.date.today()])
-                                                },
+                                                "docstatus": 1,
+                                                "date": ("between", [datetime.date.today().replace(day=1), datetime.date.today()])},
                                                ["sum(amount) as total"])
-            total_donations_by_type[donation_type["donation_type"]] = total_amount or 0
-        # print(total_donations_by_type)
+            total_donations_by_type[donation_type_name] = total_amount or 0
+
+            if donation_type_name.lower() == "hibah":
+                total_people = frappe.db.count("Donation",
+                                               {"donation_type": donation_type_name,
+                                                "item_type": "Barang",
+                                                "docstatus": 1,
+                                                "date": ("between", [datetime.date.today().replace(day=1), datetime.date.today()])})
+                total_donations_by_type[donation_type_name] = total_people
+
         return total_donations_by_type
     except Exception as e:
         frappe.log_error("Error in get_donation_by_type: {0}".format(str(e)))
@@ -296,7 +301,7 @@ def upload_file(file):
     
 # Faker
 @frappe.whitelist()
-def populate_donation_data():
+def populate_donation_data(d_type):
     fake = Faker(['id_ID'])
 
     # Ambil daftar akun bank
@@ -305,7 +310,12 @@ def populate_donation_data():
     for i in range(3):
         donation_type = "Zakat Mal"
         date = fake.date_this_month()
-        amount = fake.random_int(min=10000, max=1000000)
+        if d_type == "Zakar Mal":
+            amount = fake.random_int(min=21250, max=100000) * 100
+        elif d_type == "Kaffarat":
+            amount = fake.random_int(min=6750, max=30000) * 100
+        else:
+            amount = fake.random_int(min=100, max=10000) * 100
         phone = fake.phone_number()
         fullname = fake.name()
         item_type = "Uang"
