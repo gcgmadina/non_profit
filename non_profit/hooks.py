@@ -236,6 +236,10 @@ fixtures = [
         "filters": [["name", "in", ("hambaa@email.com")]]
 	},
     {
+        "doctype": "Donor Type",
+        "filters": [["name", "in", ("Jamaah", "Donatur Tetap")]]
+    },
+    {
         "doctype": "Donation Type",
         "filters": [["name", "in", ("Fidyah", "Hibah", "Infaq", "Zakat Fitrah", "Zakat Mal", "Jumatan", "Wakaf", "Kaffarat", "Specific Donation")]]
     },

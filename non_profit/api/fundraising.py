@@ -158,6 +158,8 @@ def create_new_donor(email, fullname):
 @frappe.whitelist(allow_guest=True)
 def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None, bank=None ):
     try:
+        print("fullname: ", fullname)
+        print("donor: ", donor)
         company = get_company_for_donations()
 
         is_donor_exist = frappe.db.exists("Donor", donor)
@@ -186,7 +188,7 @@ def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="ham
         frappe.log_error("Error in new_donation: {0}".format(str(e)))
         user_type = frappe.db.get_value('User', frappe.session.user, 'user_type')
         print(e)
-        return None
+        return str(e)
 
 @frappe.whitelist(allow_guest=True)
 def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Barang", naming_series='NPO-DTN-.YYYY.-'):
@@ -296,18 +298,43 @@ def upload_file(file):
 @frappe.whitelist()
 def populate_donation_data():
     fake = Faker(['id_ID'])
-    for i in range(10):
+
+    # Ambil daftar akun bank
+    bank_accounts = frappe.get_all('Bank Account', fields=['name'])
+
+    for i in range(3):
         donation_type = "Zakat Mal"
         date = fake.date_this_month()
         amount = fake.random_int(min=10000, max=1000000)
-        mode_of_payment = "Cash"
         phone = fake.phone_number()
-        # donor = None
         fullname = fake.name()
         item_type = "Uang"
         naming_series = 'NPO-DTN-.YYYY.-'
         donation_event = None
-        new_donation(donation_type=donation_type, date=date, amount=amount, mode_of_payment=mode_of_payment, phone=phone, fullname=fullname, item_type=item_type, naming_series=naming_series, donation_event=donation_event)
+
+        # Buat email berdasarkan fullname
+        email = fullname.replace(" ", "").lower() + "@email.com"
+
+        # Pilih mode of payment secara acak antara Cash dan Wire Transfer
+        mode_of_payment = fake.random_element(elements=["Cash", "Wire Transfer"])
+
+        bank = None
+        if mode_of_payment == "Wire Transfer" and bank_accounts:
+            bank = fake.random_element(elements=[bank['name'] for bank in bank_accounts])
+
+        new_donation(
+            donation_type=donation_type,
+            date=date,
+            amount=amount,
+            mode_of_payment=mode_of_payment,
+            phone=phone,
+            donor=email,
+            fullname=fullname,
+            item_type=item_type,
+            naming_series=naming_series,
+            donation_event=donation_event,
+            bank=bank
+        )
 
 @frappe.whitelist()
 def populate_event_data():
