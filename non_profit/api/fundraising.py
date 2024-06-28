@@ -478,6 +478,7 @@ def submit_document(doctype, docname):
 @frappe.whitelist()
 def add_donation_payment_entry(payment_entry):
     try:
+        # print("payment_entry: ", payment_entry)
         donation = frappe.get_doc("Donation", payment_entry["references"][0]["reference_name"])
 
         payment_data = frappe.get_doc({
@@ -485,20 +486,19 @@ def add_donation_payment_entry(payment_entry):
             **payment_entry  # Unpack dictionary ke dalam DocType
         })
 
-        payment_data.insert()
+        # payment_data.insert()
 
-        update_donation_payment_entry(payment_data.name, donation.name)
+        payment_entry_name = update_donation_payment_entry(payment_data, donation.name)
 
-        return {"status": "success", "message": "Payment Entry created successfully", "name": payment_entry.name}
+        return payment_entry_name
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), "Payment Entry creation failed")
+        print("Error: ", str(e))
         return {"status": "error", "message": str(e)}
 
-def update_donation_payment_entry(payment_entry_id, donation_id):
+def update_donation_payment_entry(payment_entry, donation_id):
     try:
-        payment_entry = frappe.get_doc("Payment Entry", payment_entry_id)
         donation = frappe.get_doc("Donation", donation_id)
-        print("paid to before:", payment_entry.paid_to)
 
         if donation.mode_of_payment == "Cash":
             paid_to = frappe.db.get_value("Account", {"account_name": "Kas Besar"}, "name")
@@ -521,8 +521,6 @@ def update_donation_payment_entry(payment_entry_id, donation_id):
                     "reference_no": "-",
                     "reference_date": datetime.date.today()
                 })
-        
-        print("paid to after", payment_entry.paid_to)
 
         if donation.donation_type == "Infaq":
             paid_from = frappe.db.get_value("Account", {"account_name": "Penerimaan Infaq"}, "name")
@@ -542,9 +540,11 @@ def update_donation_payment_entry(payment_entry_id, donation_id):
 
         payment_entry.save()
         payment_entry.submit()
-        # frappe.db.commit()
+
+        return payment_entry.name
     except Exception as e:
         frappe.log_error("Error in update_payment_entry: {0}".format(str(e)))
+        print("Error in : update_donation_payment_entry", str(e))
         return None
 
 @frappe.whitelist()
@@ -891,7 +891,6 @@ def add_purchase_receipt(items):
 @frappe.whitelist()
 def create_invoice_from_purchase_receipt(purchase_receipt_id, mode_of_payment):
     try:
-        # purchase_receipt = frappe.get_doc("Purchase Receipt", purchase_receipt_id)
         purchase_invoice = get_mapped_doc("Purchase Receipt", purchase_receipt_id, {
             "Purchase Receipt": {
                 "doctype": "Purchase Invoice",
@@ -905,15 +904,6 @@ def create_invoice_from_purchase_receipt(purchase_receipt_id, mode_of_payment):
             "Purchase Receipt Item": {
                 "doctype": "Purchase Invoice Item",
                 "field_map": {
-                    # "item_code": "item_code",
-                    # "item_name": "item_name",
-                    # "uom": "uom",
-                    # "rate": "rate",
-                    # "amount": "amount",
-                    # "warehouse": "warehouse",
-                    # "expense_account": "expense_account",
-                    # "cost_center": "cost_center"
-
                     "name": "pr_detail",
 					"parent": "purchase_receipt",
 					"qty": "received_qty",
