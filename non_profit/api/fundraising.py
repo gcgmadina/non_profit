@@ -232,6 +232,17 @@ def get_user_donations(user):
         else:
             donations = frappe.get_list("Donation", filters={"owner": user['data']['name']}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
                                         order_by="date desc")
+            
+        for donation in donations:
+            if donation["docstatus"] == 0 and not donation["evidance_of_transfer"]:
+                donation["status"] = "Menunggu Bukti Pembayaran"
+            elif donation["docstatus"] == 0 and donation["evidance_of_transfer"]:
+                donation["status"] = "Menunggu Konfirmasi"
+            elif donation["docstatus"] == 1:
+                donation["status"] = "Donasi Berhasil"
+            else:
+                donation["status"] = "Dibatalkan"
+
         return donations
     except Exception as e:
         frappe.log_error("Error in get_user_donations: {0}".format(str(e)))
@@ -241,10 +252,24 @@ def get_user_donations(user):
 def get_donation_by_id(donation_id):
     try:
         donation = frappe.get_doc("Donation", donation_id)
-        return donation
+        
+        if donation.docstatus == 0 and not donation.evidance_of_transfer:
+            status = "Menunggu Bukti Pembayaran"
+        elif donation.docstatus == 0 and donation.evidance_of_transfer:
+            status = "Menunggu Konfirmasi"
+        elif donation.docstatus == 1:
+            status = "Donasi Berhasil"
+        else:
+            status = "Dibatalkan"
+        
+        donation_dict = donation.as_dict()
+        donation_dict["status"] = status
+        
+        return donation_dict
     except Exception as e:
         frappe.log_error("Error in get_donation_by_id: {0}".format(str(e)))
-        return None
+        return str(e)
+
     
 @frappe.whitelist()
 def submit_donation(donation_id):

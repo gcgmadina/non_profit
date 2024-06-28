@@ -76,7 +76,7 @@
  },
  {
   "amend": 0,
-  "cancel": 0,
+  "cancel": 1,
   "create": 1,
   "delete": 1,
   "docstatus": 0,

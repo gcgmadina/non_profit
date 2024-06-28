@@ -1,0 +1,16 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Donor Type",
+  "donor_type": "Donatur Tetap",
+  "modified": "2024-01-31 11:13:06.075247",
+  "name": "Donatur Tetap"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Donor Type",
+  "donor_type": "Jamaah",
+  "modified": "2024-01-31 11:13:19.225867",
+  "name": "Jamaah"
+ }
+]
