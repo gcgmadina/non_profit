@@ -224,14 +224,22 @@ def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@e
         return None
     
 @frappe.whitelist(allow_guest=True)
-def get_user_donations(user):
+def get_user_donations(user, donation_type=None):
     try:
-        if 'Non Profit Accounting' in user['data']['roles']:
-            donations = frappe.get_list("Donation", fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
-                                        order_by="date desc")
+        if not donation_type:            
+            if 'Non Profit Accounting' in user['data']['roles']:
+                donations = frappe.get_list("Donation", fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
+                                            order_by="date desc")
+            else:
+                donations = frappe.get_list("Donation", filters={"owner": user['data']['name']}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
+                                            order_by="date desc")
         else:
-            donations = frappe.get_list("Donation", filters={"owner": user['data']['name']}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
-                                        order_by="date desc")
+            if 'Non Profit Accounting' in user['data']['roles']:
+                donations = frappe.get_list("Donation", filters={"donation_type": donation_type}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
+                                            order_by="date desc")
+            else:
+                donations = frappe.get_list("Donation", filters={"owner": user['data']['name'], "donation_type": donation_type}, fields=["name", "donation_type", "date", "amount", "item_name", "item_amount", "item_type", "mode_of_payment", "phone_number", "fullname", "docstatus", "company", "evidance_of_transfer"],
+                                            order_by="date desc")
             
         for donation in donations:
             if donation["docstatus"] == 0 and not donation["evidance_of_transfer"]:
