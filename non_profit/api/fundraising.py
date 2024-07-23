@@ -301,7 +301,7 @@ def upload_evidence(donation_id, evidence):
         return None
 
 @frappe.whitelist()
-def new_event(subject, event_category, event_type, starts_on, is_donation_event, thumbnail=None, description=None, status="open", ends_on=None):
+def new_event(subject, event_category, starts_on, is_donation_event, event_type="Public", thumbnail=None, description=None, status="Open", ends_on=None):
     try:
         event = frappe.new_doc("Event")
         event.update({
