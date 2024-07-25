@@ -210,6 +210,10 @@ website_redirects = [
     {"source": "/", "target": "/fundraising/"},
 ]
 
+website_context = {
+    "disable_signup": 0,
+}
+
 fixtures = [
     {
         "doctype": "Custom Field",

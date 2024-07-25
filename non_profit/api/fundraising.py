@@ -256,7 +256,7 @@ def get_user_donations(user, donation_type=None):
         frappe.log_error("Error in get_user_donations: {0}".format(str(e)))
         return []
     
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def get_donation_by_id(donation_id):
     try:
         donation = frappe.get_doc("Donation", donation_id)
