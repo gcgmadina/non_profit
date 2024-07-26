@@ -161,10 +161,8 @@ def create_new_donor(email, fullname):
 
     
 @frappe.whitelist(allow_guest=True)
-def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None, bank=None ):
+def new_donation(donation_type, date, amount, mode_of_payment, phone = None, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Uang", naming_series='NPO-DTN-.YYYY.-', donation_event=None, bank=None ):
     try:
-        print("fullname: ", fullname)
-        print("donor: ", donor)
         company = get_company_for_donations()
 
         is_donor_exist = frappe.db.exists("Donor", donor)
@@ -187,7 +185,6 @@ def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="ham
             "bank": bank
         })
         donation.insert(ignore_permissions=True)
-        print(donation.name)
         return donation.name
     except Exception as e:
         frappe.log_error("Error in new_donation: {0}".format(str(e)))
@@ -196,7 +193,7 @@ def new_donation(donation_type, date, amount, mode_of_payment, phone, donor="ham
         return str(e)
 
 @frappe.whitelist(allow_guest=True)
-def new_goods_donation(donation_type, date, item, amount, phone, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Barang", naming_series='NPO-DTN-.YYYY.-'):
+def new_goods_donation(donation_type, date, item, amount, phone = None, donor="hambaa@email.com", fullname="Hamba Allah", item_type="Barang", naming_series='NPO-DTN-.YYYY.-'):
     try:
         company = get_company_for_donations()
 
@@ -272,7 +269,15 @@ def get_donation_by_id(donation_id):
         
         donation_dict = donation.as_dict()
         donation_dict["status"] = status
-        
+
+        # Check if mode_of_payment is "Wire Transfer"
+        if donation.mode_of_payment == "Wire Transfer":
+            # Get the related Bank Account document
+            bank = frappe.get_doc("Bank Account", donation.bank)
+            donation_dict["bank_account_no"] = bank.bank_account_no
+
+            donation_dict["mode_of_payment"] = "Transfer Bank"
+
         return donation_dict
     except Exception as e:
         frappe.log_error("Error in get_donation_by_id: {0}".format(str(e)))
@@ -324,7 +329,6 @@ def new_event(subject, event_category, starts_on, is_donation_event, event_type=
 
 @frappe.whitelist(allow_guest=True)
 def upload_file(file):
-    print("file: ", file)
     try:
         file_url = save_file("Donation", file, "files", is_private=0)
         return file_url
@@ -659,7 +663,6 @@ def add_expense(case, amount, date):
 
 @frappe.whitelist()
 def get_expenses(case):
-    print("case: ", case)
     if case == "Pembayaran Listrik":
         try:
             account = frappe.get_value("Account", {"account_name": "Biaya PLN Gudang & Kantor"}, "name")
@@ -768,10 +771,8 @@ def add_item_group(item_group_name):
 @frappe.whitelist()
 def delete_item_groups(item_groups):
     try:
-        print("item_groups: ", item_groups)
         # item_groups = json.loads(item_groups)
         for item_group in item_groups:
-            print("item_group: ", item_group)
             frappe.delete_doc("Item Group", item_group["name"], ignore_permissions=True)
         return True
     except Exception as e:
@@ -804,7 +805,6 @@ def get_asset_category():
 @frappe.whitelist()
 def add_asset_category(asset_category):
     try:
-        print("asset_category: ", asset_category)
         newAssetCategory = frappe.new_doc("Asset Category")
         fixed_asset_account = frappe.db.get_value("Account", {"account_name": "Aktiva"}, "name")
         newAssetCategory.update({
@@ -823,10 +823,8 @@ def add_asset_category(asset_category):
 @frappe.whitelist()
 def delete_asset_categories(asset_categories):
     try:
-        print("asset_categories: ", asset_categories)
         # asset_categories = json.loads(asset_categories)
         for asset_category in asset_categories:
-            print("asset_category: ", asset_category)
             frappe.delete_doc("Asset Category", asset_category["name"], ignore_permissions=True)
         return True
     except Exception as e:
@@ -904,7 +902,6 @@ def get_purchase_receipt():
 @frappe.whitelist()
 def add_purchase_receipt(items):
     try:
-        print(type(items))
         pr = frappe.new_doc("Purchase Receipt")
         pr.update({
             "naming_series": "MAT-PRE-.YYYY.-",
