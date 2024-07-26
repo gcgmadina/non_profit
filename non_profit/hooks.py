@@ -264,4 +264,8 @@ fixtures = [
                                     "1141.001 - Persediaan Barang - Madina",
                                     "1211.002 - Aset Belum Dibayar - Madina")]]
 	},
+    {
+        "doctype": "Mode of Payment",
+        "filters": [["name", "in", ("QRIS")]]
+    },
 ]

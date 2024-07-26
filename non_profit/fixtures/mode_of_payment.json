@@ -1,0 +1,12 @@
+[
+ {
+  "accounts": [],
+  "docstatus": 0,
+  "doctype": "Mode of Payment",
+  "enabled": 1,
+  "mode_of_payment": "QRIS",
+  "modified": "2024-07-26 09:41:33.770976",
+  "name": "QRIS",
+  "type": "Cash"
+ }
+]
