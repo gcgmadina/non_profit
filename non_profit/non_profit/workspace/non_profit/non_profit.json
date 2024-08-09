@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"OzhlubNWny\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"n_HHM1tJFn\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Member\",\"col\":3}},{\"id\":\"w6G0MXvwPy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Non Profit Settings\",\"col\":3}},{\"id\":\"8CC0zPWuxv\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Membership\",\"col\":3}},{\"id\":\"c4ErdKPqhV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chapter\",\"col\":3}},{\"id\":\"yAtEqzRIAS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chapter Member\",\"col\":3}},{\"id\":\"9fJquUTeNu\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"EgYbuiPJ47\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"njsKFyFoMF\",\"type\":\"card\",\"data\":{\"card_name\":\"Loan Management\",\"col\":4}},{\"id\":\"qAI_kFMlQs\",\"type\":\"card\",\"data\":{\"card_name\":\"Grant Application\",\"col\":4}},{\"id\":\"LdkZ03ipJg\",\"type\":\"card\",\"data\":{\"card_name\":\"Membership\",\"col\":4}},{\"id\":\"sM39yyrh-4\",\"type\":\"card\",\"data\":{\"card_name\":\"Volunteer\",\"col\":4}},{\"id\":\"6Wpv-g3x42\",\"type\":\"card\",\"data\":{\"card_name\":\"Chapter\",\"col\":4}},{\"id\":\"y9lJkC_zaq\",\"type\":\"card\",\"data\":{\"card_name\":\"Donation\",\"col\":4}},{\"id\":\"PcvZ4h9mA1\",\"type\":\"card\",\"data\":{\"card_name\":\"Report\",\"col\":4}},{\"id\":\"dA2WhZL-KE\",\"type\":\"card\",\"data\":{\"card_name\":\"Tax Exemption Certification (India)\",\"col\":4}}]",
+ "content": "[{\"id\":\"OzhlubNWny\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Your Shortcuts</b></span>\",\"col\":12}},{\"id\":\"n_HHM1tJFn\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Member\",\"col\":3}},{\"id\":\"w6G0MXvwPy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Non Profit Settings\",\"col\":3}},{\"id\":\"8CC0zPWuxv\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Membership\",\"col\":3}},{\"id\":\"c4ErdKPqhV\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chapter\",\"col\":3}},{\"id\":\"yAtEqzRIAS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Chapter Member\",\"col\":3}},{\"id\":\"9fJquUTeNu\",\"type\":\"spacer\",\"data\":{\"col\":12}},{\"id\":\"EgYbuiPJ47\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>Reports &amp; Masters</b></span>\",\"col\":12}},{\"id\":\"njsKFyFoMF\",\"type\":\"card\",\"data\":{\"card_name\":\"Loan Management\",\"col\":4}},{\"id\":\"qAI_kFMlQs\",\"type\":\"card\",\"data\":{\"card_name\":\"Grant Application\",\"col\":4}},{\"id\":\"LdkZ03ipJg\",\"type\":\"card\",\"data\":{\"card_name\":\"Membership\",\"col\":4}},{\"id\":\"sM39yyrh-4\",\"type\":\"card\",\"data\":{\"card_name\":\"Volunteer\",\"col\":4}},{\"id\":\"6Wpv-g3x42\",\"type\":\"card\",\"data\":{\"card_name\":\"Chapter\",\"col\":4}},{\"id\":\"y9lJkC_zaq\",\"type\":\"card\",\"data\":{\"card_name\":\"Donation\",\"col\":4}},{\"id\":\"PcvZ4h9mA1\",\"type\":\"card\",\"data\":{\"card_name\":\"Masjid\",\"col\":4}},{\"id\":\"dA2WhZL-KE\",\"type\":\"card\",\"data\":{\"card_name\":\"Tax Exemption Certification (India)\",\"col\":4}}]",
  "creation": "2020-03-02 17:23:47.811421",
  "custom_blocks": [],
  "docstatus": 0,
@@ -247,8 +247,8 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Report",
-   "link_count": 1,
+   "label": "Masjid",
+   "link_count": 2,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -256,15 +256,25 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Donation Accumulation",
+   "label": "QR Masjid",
    "link_count": 0,
-   "link_to": "Donation Accumulation",
-   "link_type": "Report",
+   "link_to": "QR Receive",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "News",
+   "link_count": 0,
+   "link_to": "Mosque News",
+   "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
   }
  ],
- "modified": "2024-02-21 09:01:43.704644",
+ "modified": "2024-08-09 10:31:30.614506",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Non Profit",
