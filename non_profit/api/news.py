@@ -22,9 +22,20 @@ def add_news(news):
         return {'status': 'failed', 'message': _('Error adding news: {0}').format(str(e))}
 
 @frappe.whitelist(allow_guest=True)
-def get_news():
+def get_news(start=0, length=10):
     try:
-        news = frappe.get_all("Mosque News", fields=["name", "title", "thumbnail", "content", "uploaded_date", "uploaded_time"])
+        news = frappe.get_all("Mosque News", 
+                                fields=[
+                                    "name", 
+                                    "title", 
+                                    "thumbnail", 
+                                    "content", 
+                                    "uploaded_date", 
+                                    "uploaded_time"
+                                ],
+                                order_by="uploaded_date desc, uploaded_time desc",
+                                start=start,
+                                page_length=length)
 
         for item in news:
             uploaded_time = item.get("uploaded_time")
