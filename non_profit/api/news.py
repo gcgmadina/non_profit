@@ -1,5 +1,6 @@
 import frappe
 from frappe import _
+from frappe.utils import format_datetime, get_time, getdate
 
 @frappe.whitelist()
 def add_news(news):
@@ -55,3 +56,25 @@ def edit_news(news):
     except Exception as e:
         frappe.log_error("Error updating news: {}".format(str(e)))
         return {'status': 'failed', 'message': _('Error updating news: {0}').format(str(e))}
+
+@frappe.whitelist(allow_guest=True)
+def get_news_by_name(news_id):
+    try:
+        news = frappe.get_doc("Mosque News", news_id)
+        
+        # Format uploaded_time to display only hour and minute
+        formatted_time = get_time(news.uploaded_time).strftime('%H:%M')
+        
+        # Format uploaded_date to Indonesian format (dd/mm/yyyy)
+        formatted_date = getdate(news.uploaded_date).strftime('%d/%m/%Y')
+        
+        # Update the news dictionary with the formatted date and time
+        news.update({
+            'uploaded_time': formatted_time,
+            'uploaded_date': formatted_date
+        })
+        
+        return {'status': 'success', 'data': news}
+    except Exception as e:
+        frappe.log_error("Error fetching news: {}".format(str(e)))
+        return {'status': 'failed', 'message': _('Error fetching news: {0}').format(str(e))}
