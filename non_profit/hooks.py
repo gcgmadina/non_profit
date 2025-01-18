@@ -257,6 +257,10 @@ fixtures = [
         "filters": [["name", "in", ("Bank Central Asia", "Bank CIMB Niaga", "Bank Mandiri", "Bank Rakyat Indonesia", "Bank Negara Indonesia")]]
     },
     {
+        "doctype": "Role Profile",
+        "filters": [["name", "in", ("Non Profit Accounting", "Non Profit Chief", "Non Profit Secretary")]]
+    },
+    {
         "doctype": "Account",
         "filters": [["name", "in", ("1121.001 - Bank Masjid - Madina", 
                                     "4100.001 - Donasi Umum - Madina",
@@ -267,7 +271,9 @@ fixtures = [
                                     "5130.019 - Honorarium Penceramah - Madina",
                                     "5130.020 - Biaya Kebersihan - Madina",
                                     "1141.001 - Persediaan Barang - Madina",
-                                    "1211.002 - Aset Belum Dibayar - Madina")]]
+                                    "1211.002 - Aset Belum Dibayar - Madina",
+                                    "1180.000 - Penggalangan Dana - Madina"
+                                    )]]
 	},
     {
         "doctype": "Mode of Payment",

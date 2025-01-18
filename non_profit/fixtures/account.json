@@ -208,5 +208,26 @@
   "report_type": "Balance Sheet",
   "root_type": "Asset",
   "tax_rate": 0.0
+ },
+ {
+  "account_currency": "IDR",
+  "account_name": "Penggalangan Dana",
+  "account_number": "1180.000",
+  "account_type": "",
+  "balance_must_be": "",
+  "company": "GCG",
+  "disabled": 0,
+  "docstatus": 0,
+  "doctype": "Account",
+  "freeze_account": "No",
+  "include_in_gross": 0,
+  "is_group": 1,
+  "modified": "2025-01-18 00:36:53.104083",
+  "name": "1180.000 - Penggalangan Dana - Madina",
+  "old_parent": "1100.000 - Aktiva Lancar - Madina",
+  "parent_account": "1100.000 - Aktiva Lancar - Madina",
+  "report_type": "Balance Sheet",
+  "root_type": "Asset",
+  "tax_rate": 0.0
  }
 ]

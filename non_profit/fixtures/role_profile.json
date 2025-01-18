@@ -1,0 +1,131 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Role Profile",
+  "modified": "2025-01-19 00:00:51.955882",
+  "name": "Non Profit Accounting",
+  "role_profile": "Non Profit Accounting",
+  "roles": [
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Accounts Manager"
+   },
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Accounts User"
+   },
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Sales Manager"
+   },
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Sales User"
+   },
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Stock User"
+   },
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Non Profit Accounting"
+   }
+  ]
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Role Profile",
+  "modified": "2025-01-19 00:09:07.763694",
+  "name": "Non Profit Secretary",
+  "role_profile": "Non Profit Secretary",
+  "roles": [
+   {
+    "parent": "Non Profit Secretary",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Item Manager"
+   },
+   {
+    "parent": "Non Profit Secretary",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Stock Manager"
+   },
+   {
+    "parent": "Non Profit Secretary",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Stock User"
+   },
+   {
+    "parent": "Non Profit Secretary",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Purchase Manager"
+   },
+   {
+    "parent": "Non Profit Secretary",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Purchase User"
+   },
+   {
+    "parent": "Non Profit Secretary",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Non Profit Secretary"
+   }
+  ]
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Role Profile",
+  "modified": "2025-01-19 00:11:52.170703",
+  "name": "Non Profit Chief",
+  "role_profile": "Non Profit Chief",
+  "roles": [
+   {
+    "parent": "Non Profit Chief",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Accounts User"
+   },
+   {
+    "parent": "Non Profit Chief",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Stock User"
+   },
+   {
+    "parent": "Non Profit Chief",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Non Profit Chief"
+   },
+   {
+    "parent": "Non Profit Chief",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Purchase User"
+   },
+   {
+    "parent": "Non Profit Chief",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "Sales User"
+   }
+  ]
+ }
+]
