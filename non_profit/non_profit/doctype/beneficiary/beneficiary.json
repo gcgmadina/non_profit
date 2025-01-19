@@ -1,31 +1,47 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:recipient_name",
- "creation": "2025-01-19 16:31:59.848743",
+ "creation": "2025-01-20 03:30:18.821779",
  "default_view": "List",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "recipient_name",
+  "beneficiary_name",
+  "contact_column_break",
+  "beneficiary_type",
   "email",
   "phone_number",
+  "address_column_break",
   "address"
  ],
  "fields": [
   {
-   "fieldname": "recipient_name",
+   "fieldname": "beneficiary_name",
    "fieldtype": "Data",
    "in_list_view": 1,
-   "label": "Recipient Name",
-   "reqd": 1,
-   "unique": 1
+   "label": "Beneficiary",
+   "reqd": 1
+  },
+  {
+   "fieldname": "contact_column_break",
+   "fieldtype": "Column Break",
+   "label": "Contact"
+  },
+  {
+   "fieldname": "beneficiary_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Beneficiary Type",
+   "options": "\nowner\nothers",
+   "reqd": 1
   },
   {
    "fieldname": "email",
    "fieldtype": "Data",
-   "label": "Email"
+   "in_list_view": 1,
+   "label": "Email",
+   "reqd": 1
   },
   {
    "fieldname": "phone_number",
@@ -33,18 +49,22 @@
    "label": "Phone Number"
   },
   {
+   "fieldname": "address_column_break",
+   "fieldtype": "Column Break",
+   "label": "Address"
+  },
+  {
    "fieldname": "address",
    "fieldtype": "Text",
-   "label": "Address"
+   "label": "Beneficiary Address"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-19 16:36:34.050591",
+ "modified": "2025-01-20 03:30:18.821779",
  "modified_by": "Administrator",
  "module": "Non Profit",
- "name": "Charity Recipient",
- "naming_rule": "By fieldname",
+ "name": "Beneficiary",
  "owner": "Administrator",
  "permissions": [
   {

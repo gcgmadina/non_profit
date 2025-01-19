@@ -2,7 +2,7 @@
  {
   "docstatus": 0,
   "doctype": "Role Profile",
-  "modified": "2025-01-19 00:00:51.955882",
+  "modified": "2025-01-19 21:19:27.463396",
   "name": "Non Profit Accounting",
   "role_profile": "Non Profit Accounting",
   "roles": [
@@ -41,6 +41,12 @@
     "parentfield": "roles",
     "parenttype": "Role Profile",
     "role": "Non Profit Accounting"
+   },
+   {
+    "parent": "Non Profit Accounting",
+    "parentfield": "roles",
+    "parenttype": "Role Profile",
+    "role": "System Manager"
    }
   ]
  },

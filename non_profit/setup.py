@@ -7,7 +7,7 @@ def make_custom_records():
 	records = [
 		{'doctype': "Party Type", "party_type": "Member", "account_type": "Receivable"},
 		{'doctype': "Party Type", "party_type": "Donor", "account_type": "Receivable"},
-		{'doctype': "Party Type", "party_type": "Charity Recipient", "account_type": "Payable"},
+		{'doctype': "Party Type", "party_type": "Beneficiary", "account_type": "Payable"},
 	]
 	make_records(records)
 
