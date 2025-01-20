@@ -272,7 +272,8 @@ fixtures = [
                                     "5130.020 - Biaya Kebersihan - Madina",
                                     "1141.001 - Persediaan Barang - Madina",
                                     "1211.002 - Aset Belum Dibayar - Madina",
-                                    "1180.000 - Penggalangan Dana - Madina"
+                                    "4500.000 - Penggalangan Dana - Madina",
+                                    "2150.000 - Alokasi Penggalangan Dana - Madina"
                                     )]]
 	},
     {
