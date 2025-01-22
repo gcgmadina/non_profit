@@ -2,9 +2,11 @@ import frappe
 from frappe import _
 from frappe.utils import today
 from .fundraising import get_user_info
+import erpnext
+from erpnext.accounts.utils import get_account_balances
 
 @frappe.whitelist(allow_guest=True)
-def get_fundraisings(start=None, length=None, show_all=False):
+def get_fundraisings(start=None, length=None, show_all=False, ended=False):
     try:
         user = get_user_info()
         non_profit_roles = { 
@@ -16,6 +18,10 @@ def get_fundraisings(start=None, length=None, show_all=False):
 
         if user and any(role in non_profit_roles for role in user.roles) and show_all:
             filters = {}
+        elif user and ended:
+            filters = {
+                "ends_on": ("<=", today())
+            }
         else:
             filters = {
                 "ends_on": (">=", today())
@@ -30,12 +36,28 @@ def get_fundraisings(start=None, length=None, show_all=False):
                                     "content",
                                     "starts_on",
                                     "ends_on",
-                                    "account",
+                                    "income_account",
+                                    "outcome_account",
                                     "goal"
                                 ],
                                 order_by="ends_on asc",
                                 start=start,
                                 page_length=length)
+        
+        company = frappe.defaults.get_user_default("Company")
+        
+        for fundraising in fundraisings:
+            account = frappe.get_all("Account",
+                                    filters={"name": fundraising.income_account},
+                                    fields=["name as value","account_currency"])
+            income = get_account_balances(account, company)
+            fundraising["income"] = income[0]["balance"]
+
+            account = frappe.get_all("Account",
+                                    filters={"name": fundraising.outcome_account},
+                                    fields=["name as value","account_currency"])
+            outcome = get_account_balances(account, company)
+            fundraising["outcome"] = outcome[0]["balance"]
 
         return {'status': 'success', 'data': fundraisings}
     except Exception as e:
