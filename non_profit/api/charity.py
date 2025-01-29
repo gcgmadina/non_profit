@@ -208,18 +208,13 @@ def new_fundraising_journal_entry_receive(data):
             "party": data.donor,
         })
 
-        # journal_entry.append("accounts", {
-        #     "account": fundraising.outcome_account,
-        #     "debit_in_account_currency": 0,
-        #     "credit_in_account_currency": data.amount,
-        # })
         if data.mode_of_payment == "Cash":
             journal_entry.append("accounts", {
                 "account": "1111.002 - Kas Besar - Madina",
                 "debit_in_account_currency": data.amount,
                 "credit_in_account_currency": 0,
             })
-        elif data.mode_of_payment == "Bank":
+        elif data.mode_of_payment == "Wire Transfer":
             journal_entry.append("accounts", {
                 "account": "1121.001 - Bank Masjid - Madina",
                 "debit_in_account_currency": data.amount,
@@ -229,10 +224,10 @@ def new_fundraising_journal_entry_receive(data):
         journal_entry.insert()
         frappe.db.commit()
 
-        return {'status': 'success', 'message': _('Journal Entry created successfully')}
+        return {'status': 'success', 'message': _('Donasi berhasil dikirim. Tunggu konfirmasi dari pengurus masjid')}
     except Exception as e:
         frappe.log_error("Error creating journal entry: {}".format(str(e)))
-        return {'status': 'failed', 'message': _('Error creating journal entry: {0}').format(str(e))}
+        return {'status': 'failed', 'message': _('Gagal mengirim donasi, silahkan coba kembali: {0}').format(str(e))}
     
 @frappe.whitelist()
 def submit_fundraising(name):
@@ -241,7 +236,51 @@ def submit_fundraising(name):
         fundraising.submit()
         frappe.db.commit()
 
-        return {'status': 'success', 'message': _('Fundraising submitted successfully')}
+        return {'status': 'success', 'message': _('Berhasil mengkonfirmasi penerimaan donasi')}
     except Exception as e:
         frappe.log_error("Error submitting fundraising: {}".format(str(e)))
-        return {'status': 'failed', 'message': _('Error submitting fundraising: {0}').format(str(e))}
+        return {'status': 'failed', 'message': _('Gagal mengkonfirmasi penerimaan  donasi: {0}').format(str(e))}
+    
+@frappe.whitelist()
+def new_fundraising_journal_entry_allocation(data):
+    try:
+        data = frappe._dict(data)
+
+        fundraising = frappe.get_doc("Fundraising", data.fundraising)
+        beneficiary = data.beneficiary if data.beneficiary else "owner@email.com"
+
+        journal_entry = frappe.new_doc("Journal Entry")
+        journal_entry.voucher_type = "Journal Entry"
+        journal_entry.posting_date = today()
+        journal_entry.company = frappe.defaults.get_user_default("Company")
+        journal_entry.user_remark = "Penyaluran Dana Penggalangan"
+
+        journal_entry.append("accounts", {
+            "account": fundraising.outcome_account,
+            "debit_in_account_currency": data.amount,
+            "credit_in_account_currency": 0,
+            "party_type": "Beneficiary",
+            "party": beneficiary,
+        })
+
+        if data.mode_of_payment == "Cash":
+            journal_entry.append("accounts", {
+                "account": "1111.002 - Kas Besar - Madina",
+                "debit_in_account_currency": 0,
+                "credit_in_account_currency": data.amount,
+            })
+        elif data.mode_of_payment == "Wire Transfer":
+            journal_entry.append("accounts", {
+                "account": "1121.001 - Bank Masjid - Madina",
+                "debit_in_account_currency": 0,
+                "credit_in_account_currency": data.amount,
+            })
+
+        journal_entry.insert()
+        journal_entry.submit()
+        frappe.db.commit()
+
+        return {'status': 'success', 'message': _('Data alokasi dana berhasil disimpan')}
+    except Exception as e:
+        frappe.log_error("Error creating journal entry: {}".format(str(e)))
+        return {'status': 'failed', 'message': _('Gagal menyimpan alokasi dana: {0}').format(str(e))}
