@@ -7,3 +7,4 @@ non_profit/docs/current
 __pycache__
 node_modules/
 fundraising/
+!non_profit/doctype/fundraising
