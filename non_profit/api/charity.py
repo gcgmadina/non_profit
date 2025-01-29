@@ -20,7 +20,7 @@ def get_fundraisings(start=None, length=None, show_all=False, ended=False):
             filters = {}
         elif user and ended:
             filters = {
-                "ends_on": ("<=", today())
+                "ends_on": ("<", today())
             }
         else:
             filters = {
@@ -186,3 +186,62 @@ def make_new_fundraising_outcome_account(account_name):
         frappe.log_error(message=str(e), title="Account Creation Error")
         print(f"Error creating account: {str(e)}")
         return {"status": "failed", "message": f"Error creating account: {str(e)}"}
+    
+@frappe.whitelist(allow_guest=True)
+def new_fundraising_journal_entry_receive(data):
+    try:
+        data = frappe._dict(data)
+
+        fundraising = frappe.get_doc("Fundraising", data.fundraising)
+
+        journal_entry = frappe.new_doc("Journal Entry")
+        journal_entry.voucher_type = "Journal Entry"
+        journal_entry.posting_date = today()
+        journal_entry.company = frappe.defaults.get_user_default("Company")
+        journal_entry.user_remark = "Penerimaan Donasi"
+        
+        journal_entry.append("accounts", {
+            "account": fundraising.income_account,
+            "debit_in_account_currency": 0,
+            "credit_in_account_currency": data.amount,
+            "party_type": "Donor",
+            "party": data.donor,
+        })
+
+        # journal_entry.append("accounts", {
+        #     "account": fundraising.outcome_account,
+        #     "debit_in_account_currency": 0,
+        #     "credit_in_account_currency": data.amount,
+        # })
+        if data.mode_of_payment == "Cash":
+            journal_entry.append("accounts", {
+                "account": "1111.002 - Kas Besar - Madina",
+                "debit_in_account_currency": data.amount,
+                "credit_in_account_currency": 0,
+            })
+        elif data.mode_of_payment == "Bank":
+            journal_entry.append("accounts", {
+                "account": "1121.001 - Bank Masjid - Madina",
+                "debit_in_account_currency": data.amount,
+                "credit_in_account_currency": 0,
+            })
+
+        journal_entry.insert()
+        frappe.db.commit()
+
+        return {'status': 'success', 'message': _('Journal Entry created successfully')}
+    except Exception as e:
+        frappe.log_error("Error creating journal entry: {}".format(str(e)))
+        return {'status': 'failed', 'message': _('Error creating journal entry: {0}').format(str(e))}
+    
+@frappe.whitelist()
+def submit_fundraising(name):
+    try:
+        fundraising = frappe.get_doc("Journal Entry", name)
+        fundraising.submit()
+        frappe.db.commit()
+
+        return {'status': 'success', 'message': _('Fundraising submitted successfully')}
+    except Exception as e:
+        frappe.log_error("Error submitting fundraising: {}".format(str(e)))
+        return {'status': 'failed', 'message': _('Error submitting fundraising: {0}').format(str(e))}

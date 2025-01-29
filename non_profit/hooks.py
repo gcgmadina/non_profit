@@ -276,8 +276,4 @@ fixtures = [
                                     "2150.000 - Alokasi Penggalangan Dana - Madina"
                                     )]]
 	},
-    {
-        "doctype": "Mode of Payment",
-        "filters": [["name", "in", ("QRIS")]]
-    },
 ]
