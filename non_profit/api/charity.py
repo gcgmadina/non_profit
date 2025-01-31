@@ -62,7 +62,7 @@ def get_fundraisings(start=None, length=None, show_all=False, ended=False):
         return {'status': 'success', 'data': fundraisings}
     except Exception as e:
         frappe.log_error("Error fetching fundraisings: {}".format(str(e)))
-        return {'status': 'failed', 'message': _('Error fetching fundraisings: {0}').format(str(e))}
+        return {'status': 'failed', 'message': _('Gagal mendapatkan informassi penggalangan dana: {0}').format(str(e))}
 
 @frappe.whitelist()    
 def add_new_funsraising(data):
@@ -85,15 +85,16 @@ def add_new_funsraising(data):
             if fundraising.outcome_account:
                 frappe.delete_doc("Account", fundraising.outcome_account)
 
-            raise Exception("Error creating fundraising account")
+            # raise Exception("Error creating fundraising account")
+            raise Exception("Gagal membuat akun penggalangan dana")
         else:
             fundraising.insert()
             frappe.db.commit()
 
-        return {'status': 'success', 'message': _('Fundraising added successfully')}
+        return {'status': 'success', 'message': _('Penggalangan dana berhasil ditambahkan')}
     except Exception as e:
         frappe.log_error("Error adding fundraising: {}".format(str(e)))
-        return {'status': 'failed', 'message': _('Error adding fundraising: {0}').format(str(e))}
+        return {'status': 'failed', 'message': _('Terjadi error paada proses pembuatan penggalangan dana: {0}').format(str(e))}
     
 def make_new_fundraising_income_account(account_name):
     try:
@@ -139,7 +140,7 @@ def make_new_fundraising_income_account(account_name):
     except Exception as e:
         frappe.log_error(message=str(e), title="Account Creation Error")
         print(f"Error creating account: {str(e)}")
-        return {"status": "failed", "message": f"Error creating account: {str(e)}"}
+        return {"status": "failed", "message": f"Gagal membuat akun dana masuk: {str(e)}"}
     
 def make_new_fundraising_outcome_account(account_name):
     try:
@@ -185,7 +186,7 @@ def make_new_fundraising_outcome_account(account_name):
     except Exception as e:
         frappe.log_error(message=str(e), title="Account Creation Error")
         print(f"Error creating account: {str(e)}")
-        return {"status": "failed", "message": f"Error creating account: {str(e)}"}
+        return {"status": "failed", "message": f"Gagal membuat akun untuk alokasi dana: {str(e)}"}
     
 @frappe.whitelist(allow_guest=True)
 def new_fundraising_journal_entry_receive(data):
