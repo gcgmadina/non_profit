@@ -6,7 +6,7 @@ import erpnext
 from erpnext.accounts.utils import get_account_balances
 
 @frappe.whitelist(allow_guest=True)
-def get_fundraisings(start=None, length=None, show_all=False, ended=False):
+def get_fundraisings(start=0, length=10, show_all=False, ended=False):
     try:
         user = get_user_info()
         non_profit_roles = { 
@@ -51,7 +51,7 @@ def get_fundraisings(start=None, length=None, show_all=False, ended=False):
                                     filters={"name": fundraising.income_account},
                                     fields=["name as value","account_currency"])
             income = get_account_balances(account, company)
-            fundraising["income"] = income[0]["balance"]
+            fundraising["income"] = income[0]["balance"] * -1
 
             account = frappe.get_all("Account",
                                     filters={"name": fundraising.outcome_account},

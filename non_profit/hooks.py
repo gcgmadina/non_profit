@@ -241,6 +241,10 @@ fixtures = [
         "filters": [["name", "in", ("One Time Supplier")]]
 	},
     {
+        "doctype": "Beneficiary",
+        "filters": [["name", "in", ("owner@email.com")]]
+    },
+    {
         "doctype": "Donor",
         "filters": [["name", "in", ("hambaa@email.com")]]
 	},

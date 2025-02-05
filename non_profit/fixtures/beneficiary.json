@@ -1,0 +1,13 @@
+[
+ {
+  "address": null,
+  "beneficiary_name": "owner@email.com",
+  "beneficiary_type": "owner",
+  "docstatus": 0,
+  "doctype": "Beneficiary",
+  "email": "owner@email.com",
+  "modified": "2025-02-05 14:37:51.383338",
+  "name": "owner@email.com",
+  "phone_number": null
+ }
+]
