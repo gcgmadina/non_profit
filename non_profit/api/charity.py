@@ -64,6 +64,34 @@ def get_fundraisings(start=0, length=10, show_all=False, ended=False):
         frappe.log_error("Error fetching fundraisings: {}".format(str(e)))
         return {'status': 'failed', 'message': _('Gagal mendapatkan informassi penggalangan dana: {0}').format(str(e))}
 
+@frappe.whitelist(allow_guest=True)
+def get_fundraising_details(fundraising):
+    try:
+        fundraising = frappe.get_doc("Fundraising", fundraising)
+        company = frappe.defaults.get_user_default("Company")
+        
+        account = frappe.get_all("Account",
+                                filters={"name": fundraising.income_account},
+                                fields=["name as value","account_currency"])
+        income = get_account_balances(account, company)
+
+        account = frappe.get_all("Account",
+                                filters={"name": fundraising.outcome_account},
+                                fields=["name as value","account_currency"])
+        outcome = get_account_balances(account, company)
+
+        fundraising_dict = fundraising.as_dict()
+        fundraising_dict["income"] = income[0]["balance"] * -1
+        fundraising_dict["outcome"] = outcome[0]["balance"]
+
+        # print(fundraising.income)
+        # print(fundraising.outcome)
+
+        return {'status': 'success', 'data': fundraising_dict}
+    except Exception as e:
+        frappe.log_error("Error fetching fundraising details: {}".format(str(e)))
+        return {'status': 'failed', 'message': _('Gagal mendapatkan informassi penggalangan dana: {0}').format(str(e))}
+
 @frappe.whitelist()    
 def add_new_funsraising(data):
     try:
