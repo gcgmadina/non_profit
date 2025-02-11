@@ -155,9 +155,16 @@ def create_new_donor(email, fullname):
             "email": email
         })
         donor.insert()
+        frappe.db.commit()
+        return {
+            "name": donor.name,
+        }
     except Exception as e:
         frappe.log_error("Error in create_new_donor: {0}".format(str(e)))
-        return None
+        return {
+            "status": "error",
+            "message": str(e)
+        }
 
     
 @frappe.whitelist(allow_guest=True)
