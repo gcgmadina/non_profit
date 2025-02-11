@@ -335,9 +335,79 @@ def get_fundraising_journal_entry_received():
         journal_entries = frappe.get_list(
             "Journal Entry",
             filters=filters,
-            fields=["name", "posting_date", "user_remark", "total_debit", "total_credit", "voucher_type", "docstatus"]
+            fields=[
+                "name", 
+                "posting_date", 
+                "user_remark", 
+                "total_debit", 
+                "total_credit", 
+                "voucher_type", 
+                "docstatus",
+                "mode_of_payment",
+                "cheque_no",
+                "cheque_date",
+            ],
+            order_by="name desc"
         )
+
+        for entry in journal_entries:
+            entry["cheque_name"] = entry["user_remark"].replace("Penerimaan Donasi - ", "")
+
+            if entry["mode_of_payment"] == "Wire Transfer":
+                entry["mode_of_payment"] = "Transfer Bank"
+            elif entry["mode_of_payment"] == "Cash":
+                entry["mode_of_payment"] = "Tunai"
+
+            if entry["docstatus"] == 1:
+                entry["status"] = "Diterima"
+            else:
+                entry["status"] = "Menunggu Verifikasi"
+
         return {"status": "success", "data": journal_entries}
     except Exception as e:
         frappe.log_error(f"Error fetching journal entries: {str(e)}")
+        return {"status": "failed", "message": f"Gagal mengambil data: {str(e)}"}
+
+@frappe.whitelist(allow_guest=True)
+def get_fundraising_journal_entry_received_details(journal_entry):
+    try:
+        user = get_user_info()
+
+        filters = [["name", "=", journal_entry]]
+        if user.user_type == "Website User":
+            filters.append(["owner", "=", user.name])
+
+        journal_entry = frappe.get_list(
+            "Journal Entry", 
+            filters=filters,
+            fields=[
+                "name", 
+                "posting_date", 
+                "user_remark", 
+                "total_debit", 
+                "total_credit", 
+                "voucher_type", 
+                "docstatus",
+                "mode_of_payment",
+                "cheque_no",
+                "cheque_date",
+            ]
+        )
+
+        for entry in journal_entry:
+            entry["cheque_name"] = entry["user_remark"].replace("Penerimaan Donasi - ", "")
+
+            if entry["mode_of_payment"] == "Wire Transfer":
+                entry["mode_of_payment"] = "Transfer Bank"
+            elif entry["mode_of_payment"] == "Cash":
+                entry["mode_of_payment"] = "Tunai"
+
+            if entry["docstatus"] == 1:
+                entry["status"] = "Diterima"
+            else:
+                entry["status"] = "Menunggu Verifikasi"
+
+        return {"status": "success", "data": journal_entry[0]}
+    except Exception as e:
+        frappe.log_error(f"Error fetching journal entry details: {str(e)}")
         return {"status": "failed", "message": f"Gagal mengambil data: {str(e)}"}
