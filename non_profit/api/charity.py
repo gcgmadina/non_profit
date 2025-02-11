@@ -325,10 +325,17 @@ def new_fundraising_journal_entry_allocation(data):
 @frappe.whitelist(allow_guest=True)
 def get_fundraising_journal_entry_received():
     try:
+        user = get_user_info()
+
+        filters = [["user_remark", "like", "Penerimaan Donasi -%"]]
+
+        if user.user_type == "Website User":
+            filters.append(["owner", "=", user.name])
+
         journal_entries = frappe.get_list(
             "Journal Entry",
-            filters=[["user_remark", "like", "Penerimaan Donasi -%"]],
-            fields=["name", "posting_date", "user_remark", "total_debit", "total_credit", "voucher_type"]
+            filters=filters,
+            fields=["name", "posting_date", "user_remark", "total_debit", "total_credit", "voucher_type", "docstatus"]
         )
         return {"status": "success", "data": journal_entries}
     except Exception as e:
