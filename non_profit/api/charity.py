@@ -229,7 +229,7 @@ def new_fundraising_journal_entry_receive(data):
         journal_entry.voucher_type = "Journal Entry"
         journal_entry.posting_date = today()
         journal_entry.company = frappe.defaults.get_user_default("Company")
-        journal_entry.user_remark = f"Penerimaan Donasi - {data.bill_name}"
+        journal_entry.user_remark = f"Penerimaan Donasi - {data.cheque_name}"
         journal_entry.mode_of_payment = data.mode_of_payment
 
         if not frappe.db.exists("Donor", data.donor):
@@ -255,8 +255,8 @@ def new_fundraising_journal_entry_receive(data):
                 "debit_in_account_currency": data.amount,
                 "credit_in_account_currency": 0,
             })
-            journal_entry.bill_no = data.bill_no
-            journal_entry.bill_date = data.bill_date
+            journal_entry.cheque_no = data.cheque_no
+            journal_entry.cheque_date = data.cheque_date
 
         journal_entry.insert()
         frappe.db.commit()
