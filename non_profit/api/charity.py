@@ -221,16 +221,18 @@ def new_fundraising_journal_entry_receive(data):
     try:
         data = frappe._dict(data)
 
+        user = get_user_info()
+
         fundraising = frappe.get_doc("Fundraising", data.fundraising)
 
         journal_entry = frappe.new_doc("Journal Entry")
         journal_entry.voucher_type = "Journal Entry"
         journal_entry.posting_date = today()
         journal_entry.company = frappe.defaults.get_user_default("Company")
-        journal_entry.user_remark = "Penerimaan Donasi"
+        journal_entry.user_remark = f"Penerimaan Donasi - {data.bill_name}"
+        journal_entry.mode_of_payment = data.mode_of_payment
 
         if not frappe.db.exists("Donor", data.donor):
-            user = get_user_info()
             create_new_donor(user.name, user.full_name)
         
         journal_entry.append("accounts", {
@@ -253,6 +255,8 @@ def new_fundraising_journal_entry_receive(data):
                 "debit_in_account_currency": data.amount,
                 "credit_in_account_currency": 0,
             })
+            journal_entry.bill_no = data.bill_no
+            journal_entry.bill_date = data.bill_date
 
         journal_entry.insert()
         frappe.db.commit()
