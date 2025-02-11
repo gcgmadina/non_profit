@@ -321,3 +321,16 @@ def new_fundraising_journal_entry_allocation(data):
     except Exception as e:
         frappe.log_error("Error creating journal entry: {}".format(str(e)))
         return {'status': 'failed', 'message': _('Gagal menyimpan alokasi dana: {0}').format(str(e))}
+    
+@frappe.whitelist(allow_guest=True)
+def get_fundraising_journal_entry_received():
+    try:
+        journal_entries = frappe.get_list(
+            "Journal Entry",
+            filters=[["user_remark", "like", "Penerimaan Donasi -%"]],
+            fields=["name", "posting_date", "user_remark", "total_debit", "total_credit", "voucher_type"]
+        )
+        return {"status": "success", "data": journal_entries}
+    except Exception as e:
+        frappe.log_error(f"Error fetching journal entries: {str(e)}")
+        return {"status": "failed", "message": f"Gagal mengambil data: {str(e)}"}
