@@ -1,7 +1,7 @@
 import frappe
 from frappe import _
 from frappe.utils import today
-from .fundraising import get_user_info
+from .fundraising import get_user_info, create_new_donor
 import erpnext
 from erpnext.accounts.utils import get_account_balances
 
@@ -228,6 +228,10 @@ def new_fundraising_journal_entry_receive(data):
         journal_entry.posting_date = today()
         journal_entry.company = frappe.defaults.get_user_default("Company")
         journal_entry.user_remark = "Penerimaan Donasi"
+
+        if not frappe.db.exists("Donor", data.donor):
+            user = get_user_info()
+            create_new_donor(user.name, user.full_name)
         
         journal_entry.append("accounts", {
             "account": fundraising.income_account,
