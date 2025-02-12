@@ -338,6 +338,7 @@ def get_fundraising_journal_entry_received():
             filters=filters,
             fields=[
                 "name", 
+                "owner",
                 "posting_date", 
                 "user_remark", 
                 "total_debit", 
@@ -394,6 +395,7 @@ def get_fundraising_journal_entry_received_details(journal_entry):
             filters=filters,
             fields=[
                 "name", 
+                "owner",
                 "posting_date", 
                 "user_remark", 
                 "total_debit", 
@@ -427,10 +429,12 @@ def get_fundraising_journal_entry_received_details(journal_entry):
                 entry["cheque_name"] = ""
                 entry["fundraising"] = ""
 
-            entry["fundraising_name"] = frappe.get_value("Fundraising", entry.fundraising, "title")
+            # entry["fundraising_name"] = frappe.get_value("Fundraising", entry.fundraising, "title")
+            entry["fundraising_name"], entry["Fundraising_thumbnail"] = frappe.get_value("Fundraising", entry.fundraising, ["title", "thumbnail"])
 
 
-        return {"status": "success", "data": journal_entry}
+
+        return {"status": "success", "data": journal_entry[0]}
     except Exception as e:
         frappe.log_error(f"Error fetching journal entry details: {str(e)}")
         return {"status": "failed", "message": f"Gagal mengambil data: {str(e)}"}
