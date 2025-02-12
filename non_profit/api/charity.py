@@ -291,7 +291,7 @@ def new_fundraising_journal_entry_allocation(data):
         journal_entry.voucher_type = "Journal Entry"
         journal_entry.posting_date = today()
         journal_entry.company = frappe.defaults.get_user_default("Company")
-        journal_entry.user_remark = "Penyaluran Dana Penggalangan"
+        journal_entry.user_remark = f"{ data.fundraising } - Penyaluran Dana Penggalangan - { data.note }"
 
         journal_entry.append("accounts", {
             "account": fundraising.outcome_account,
@@ -315,13 +315,57 @@ def new_fundraising_journal_entry_allocation(data):
             })
 
         journal_entry.insert()
-        journal_entry.submit()
         frappe.db.commit()
+        journal_entry.submit()
 
         return {'status': 'success', 'message': _('Data alokasi dana berhasil disimpan')}
     except Exception as e:
         frappe.log_error("Error creating journal entry: {}".format(str(e)))
         return {'status': 'failed', 'message': _('Gagal menyimpan alokasi dana: {0}').format(str(e))}
+    
+@frappe.whitelist(allow_guest=True)
+def get_fundraising_journal_entry_allocations(fundraising):
+    try:
+
+        filters = [["user_remark", "like", f"%{fundraising} - Penyaluran Dana Penggalangan%"]]
+        print(filters)
+
+        journal_entries = frappe.get_list(
+            "Journal Entry",
+            filters=filters,
+            fields=[
+                "name", 
+                "owner",
+                "posting_date", 
+                "user_remark", 
+                "total_debit", 
+                "total_credit", 
+                "voucher_type", 
+                "docstatus",
+                "mode_of_payment",
+                "cheque_no",
+                "cheque_date",
+            ],
+            order_by="name desc"
+        )
+        print(journal_entries)
+
+        for entry in journal_entries:
+            match = re.search(r"(FR\d+) - Penyaluran Dana Penggalangan - (.+)", entry.user_remark)
+            if match:
+                entry["fundraising"] = match.group(1)
+                entry["note"] = match.group(2)
+            else:
+                entry["note"] = ""
+                entry["fundraising"] = ""
+
+            if entry["fundraising"]:
+                entry["fundraising_name"], entry["Fundraising_thumbnail"] = frappe.get_value("Fundraising", entry.fundraising, ["title", "thumbnail"])
+
+        return {"status": "success", "data": journal_entries}
+    except Exception as e:
+        frappe.log_error(f"Error fetching journal entries: {str(e)}")
+        return {"status": "failed", "message": f"Gagal mengambil data: {str(e)}"}
     
 @frappe.whitelist(allow_guest=True)
 def get_fundraising_journal_entry_received():
