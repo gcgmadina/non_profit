@@ -4,6 +4,7 @@ from frappe.utils import today
 from .fundraising import get_user_info, create_new_donor
 import erpnext
 from erpnext.accounts.utils import get_account_balances
+import re
 
 @frappe.whitelist(allow_guest=True)
 def get_fundraisings(start=0, length=10, show_all=False, ended=False):
@@ -229,7 +230,7 @@ def new_fundraising_journal_entry_receive(data):
         journal_entry.voucher_type = "Journal Entry"
         journal_entry.posting_date = today()
         journal_entry.company = frappe.defaults.get_user_default("Company")
-        journal_entry.user_remark = f"Penerimaan Donasi - {data.cheque_name}"
+        journal_entry.user_remark = f"{data.fundraising} - Penerimaan Donasi - {data.cheque_name}"
         journal_entry.mode_of_payment = data.mode_of_payment
 
         if not frappe.db.exists("Donor", data.donor):
@@ -327,7 +328,7 @@ def get_fundraising_journal_entry_received():
     try:
         user = get_user_info()
 
-        filters = [["user_remark", "like", "Penerimaan Donasi -%"]]
+        filters = [["user_remark", "like", "%Penerimaan Donasi%"]]
 
         if user.user_type == "Website User":
             filters.append(["owner", "=", user.name])
@@ -351,7 +352,7 @@ def get_fundraising_journal_entry_received():
         )
 
         for entry in journal_entries:
-            entry["cheque_name"] = entry["user_remark"].replace("Penerimaan Donasi - ", "")
+            # entry["cheque_name"] = entry["user_remark"].replace("Penerimaan Donasi - ", "")
 
             if entry["mode_of_payment"] == "Wire Transfer":
                 entry["mode_of_payment"] = "Transfer Bank"
@@ -359,9 +360,19 @@ def get_fundraising_journal_entry_received():
                 entry["mode_of_payment"] = "Tunai"
 
             if entry["docstatus"] == 1:
-                entry["status"] = "Diterima"
+                entry["docstatus"] = "Diterima"
             else:
-                entry["status"] = "Menunggu Verifikasi"
+                entry["docstatus"] = "Menunggu Verifikasi"
+
+            match = re.search(r"(FR\d+) - Penerimaan Donasi - (.+)", entry.user_remark)
+            if match:
+                entry["fundraising"] = match.group(1)
+                entry["cheque_name"] = match.group(2)
+            else:
+                entry["cheque_name"] = ""
+                entry["fundraising"] = ""
+
+            entry["fundraising_name"] = frappe.get_value("Fundraising", entry.fundraising, "title")
 
         return {"status": "success", "data": journal_entries}
     except Exception as e:
@@ -395,7 +406,7 @@ def get_fundraising_journal_entry_received_details(journal_entry):
         )
 
         for entry in journal_entry:
-            entry["cheque_name"] = entry["user_remark"].replace("Penerimaan Donasi - ", "")
+            # entry["cheque_name"] = entry["user_remark"].replace("Penerimaan Donasi - ", "")
 
             if entry["mode_of_payment"] == "Wire Transfer":
                 entry["mode_of_payment"] = "Transfer Bank"
@@ -403,11 +414,22 @@ def get_fundraising_journal_entry_received_details(journal_entry):
                 entry["mode_of_payment"] = "Tunai"
 
             if entry["docstatus"] == 1:
-                entry["status"] = "Diterima"
+                entry["docstatus"] = "Diterima"
             else:
-                entry["status"] = "Menunggu Verifikasi"
+                entry["docstatus"] = "Menunggu Verifikasi"
 
-        return {"status": "success", "data": journal_entry[0]}
+            match = re.search(r"(FR\d+) - Penerimaan Donasi - (.+)", entry.user_remark)
+            if match:
+                entry["fundraising"] = match.group(1)
+                entry["cheque_name"] = match.group(2)
+            else:
+                entry["cheque_name"] = ""
+                entry["fundraising"] = ""
+
+            entry["fundraising_name"], entry["Fundraising_thumbnail"] = frappe.get_value("Fundraising", entry.fundraising, ["title", "thumbnail"])
+
+
+        return {"status": "success", "data": journal_entry}
     except Exception as e:
         frappe.log_error(f"Error fetching journal entry details: {str(e)}")
         return {"status": "failed", "message": f"Gagal mengambil data: {str(e)}"}
