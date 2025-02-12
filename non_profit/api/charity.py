@@ -372,7 +372,8 @@ def get_fundraising_journal_entry_received():
                 entry["cheque_name"] = ""
                 entry["fundraising"] = ""
 
-            entry["fundraising_name"] = frappe.get_value("Fundraising", entry.fundraising, "title")
+            if entry["fundraising"]:
+                entry["fundraising_name"], entry["Fundraising_thumbnail"] = frappe.get_value("Fundraising", entry.fundraising, ["title", "thumbnail"])
 
         return {"status": "success", "data": journal_entries}
     except Exception as e:
@@ -426,7 +427,7 @@ def get_fundraising_journal_entry_received_details(journal_entry):
                 entry["cheque_name"] = ""
                 entry["fundraising"] = ""
 
-            entry["fundraising_name"], entry["Fundraising_thumbnail"] = frappe.get_value("Fundraising", entry.fundraising, ["title", "thumbnail"])
+            entry["fundraising_name"] = frappe.get_value("Fundraising", entry.fundraising, "title")
 
 
         return {"status": "success", "data": journal_entry}
