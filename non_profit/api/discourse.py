@@ -58,3 +58,37 @@ def new_islamic_discourse(data):
             "status": "error",
             "message": _("Islamic Discourse Creation Error: ", str(e))
         }
+
+@frappe.whitelist()
+def update_islamic_discourse(name, data):
+    try:
+        discourse = frappe.get_doc("Islamic Discourse", name)
+        discourse.update(data)
+        discourse.save()
+        frappe.db.commit()
+        return {
+            "status": "success",
+            "message": _("Islamic Discourse Updated Successfully")
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("Islamic Discourse Update Error"))
+        return {
+            "status": "error",
+            "message": _("Islamic Discourse Update Error: ", str(e))
+        }
+    
+@frappe.whitelist()
+def delete_islamic_discourse(name):
+    try:
+        frappe.delete_doc("Islamic Discourse", name)
+        frappe.db.commit()
+        return {
+            "status": "success",
+            "message": _("Islamic Discourse Deleted Successfully")
+        }
+    except Exception as e:
+        frappe.log_error(frappe.get_traceback(), _("Islamic Discourse Deletion Error"))
+        return {
+            "status": "error",
+            "message": _("Islamic Discourse Deletion Error: ", str(e))
+        }
