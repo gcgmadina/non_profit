@@ -23,7 +23,7 @@ def get_islamic_discourse_list(start=0, length=10):
         frappe.log_error(frappe.get_traceback(), _("Islamic Discourse List Error"))
         return {
             "status": "error",
-            "message": _("Islamic Discourse List Error: ", str(e))
+            "message": _("Gagal mengambil data ceramah: ", str(e))
         }
     
 @frappe.whitelist(allow_guest=True)
@@ -38,7 +38,7 @@ def get_islamic_discourse(name):
         frappe.log_error(frappe.get_traceback(), _("Islamic Discourse Error"))
         return {
             "status": "error",
-            "message": _("Islamic Discourse Error: ", str(e))
+            "message": _("Gagal mengambil data ceramah: ", str(e))
         }
     
 @frappe.whitelist()
@@ -50,13 +50,13 @@ def new_islamic_discourse(data):
         frappe.db.commit()
         return {
             "status": "success",
-            "message": _("Islamic Discourse Created Successfully")
+            "message": _("Berhasil membuat jadwal kajian")
         }
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("Islamic Discourse Creation Error"))
         return {
             "status": "error",
-            "message": _("Islamic Discourse Creation Error: ", str(e))
+            "message": _("Gagal membuat jadwal kajian: ", str(e))
         }
 
 @frappe.whitelist()
@@ -68,13 +68,13 @@ def update_islamic_discourse(name, data):
         frappe.db.commit()
         return {
             "status": "success",
-            "message": _("Islamic Discourse Updated Successfully")
+            "message": _("Berhasil mengedit kajian")
         }
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("Islamic Discourse Update Error"))
         return {
             "status": "error",
-            "message": _("Islamic Discourse Update Error: ", str(e))
+            "message": _("Gagal mengedit kajian: ", str(e))
         }
     
 @frappe.whitelist()
@@ -84,11 +84,11 @@ def delete_islamic_discourse(name):
         frappe.db.commit()
         return {
             "status": "success",
-            "message": _("Islamic Discourse Deleted Successfully")
+            "message": _("Berhasil menghapus kajian")
         }
     except Exception as e:
         frappe.log_error(frappe.get_traceback(), _("Islamic Discourse Deletion Error"))
         return {
             "status": "error",
-            "message": _("Islamic Discourse Deletion Error: ", str(e))
+            "message": _("Gagal menghapus kajian: ", str(e))
         }

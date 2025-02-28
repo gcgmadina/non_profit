@@ -43,7 +43,7 @@
   },
   {
    "fieldname": "description",
-   "fieldtype": "Small Text",
+   "fieldtype": "Text Editor",
    "in_list_view": 1,
    "label": "Description",
    "reqd": 1
@@ -57,7 +57,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-28 04:13:13.956221",
+ "modified": "2025-02-28 06:43:01.402071",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Islamic Discourse",
