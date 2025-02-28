@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "field:subject",
+ "autoname": "Discourse-.#####",
  "creation": "2025-02-28 03:42:08.366836",
  "default_view": "List",
  "doctype": "DocType",
@@ -21,8 +21,7 @@
    "fieldtype": "Data",
    "in_list_view": 1,
    "label": "Subject",
-   "reqd": 1,
-   "unique": 1
+   "reqd": 1
   },
   {
    "fieldname": "speaker",
@@ -57,11 +56,11 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-02-28 06:43:01.402071",
+ "modified": "2025-02-28 11:50:35.087917",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Islamic Discourse",
- "naming_rule": "By fieldname",
+ "naming_rule": "Expression (old style)",
  "owner": "Administrator",
  "permissions": [
   {
