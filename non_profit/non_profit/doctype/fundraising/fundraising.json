@@ -15,7 +15,8 @@
   "income_account",
   "outcome_account",
   "content",
-  "goal"
+  "goal",
+  "code"
  ],
  "fields": [
   {
@@ -65,11 +66,17 @@
    "fieldtype": "Link",
    "label": "Outcome Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "code",
+   "fieldtype": "Data",
+   "label": "Unique Code",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-01-30 01:40:41.913744",
+ "modified": "2025-03-02 02:21:04.023130",
  "modified_by": "Administrator",
  "module": "Non Profit",
  "name": "Fundraising",
