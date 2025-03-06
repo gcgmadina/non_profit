@@ -107,6 +107,7 @@ def add_new_funsraising(data):
         fundraising.outcome_account = make_new_fundraising_outcome_account(data.title)
         fundraising.goal = data.goal
         fundraising.thumbnail = data.thumbnail
+        fundraising.code = data.code
 
         if fundraising.income_account is None or fundraising.outcome_account is None:
             if fundraising.income_account:
