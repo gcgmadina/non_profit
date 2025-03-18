@@ -18,12 +18,15 @@ def get_fundraisings(start=0, length=10, show_all=False, ended=False):
             }
 
         if user and any(role in non_profit_roles for role in user.roles) and show_all:
+            order = "ends_on desc"
             filters = {}
         elif user and ended:
+            order = "ends_on desc"
             filters = {
                 "ends_on": ("<", today())
             }
         else:
+            order = "ends_on asc"
             filters = {
                 "ends_on": (">=", today())
             }
@@ -41,7 +44,7 @@ def get_fundraisings(start=0, length=10, show_all=False, ended=False):
                                     "outcome_account",
                                     "goal"
                                 ],
-                                order_by="ends_on asc",
+                                order_by=order,
                                 start=start,
                                 page_length=length)
         
