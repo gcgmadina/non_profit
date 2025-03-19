@@ -663,6 +663,7 @@ def add_expense(case, amount, date):
             })
         journal_entry.insert()
         journal_entry.submit()
+        frappe.db.commit()
         return journal_entry.name
     except Exception as e:
         frappe.log_error("Error in add_journal_entry: {0}".format(str(e)))
