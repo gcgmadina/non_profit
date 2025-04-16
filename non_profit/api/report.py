@@ -55,3 +55,41 @@ def report_data(filters=None):
     except Exception as e:
         frappe.log_error("Error retrieving trial balance: {}".format(str(e)))
         return str(e)
+
+@frappe.whitelist()
+def daily_report_journal_entry(fromDate, toDate, start = 0, length = 10):
+    try:
+        entries = frappe.get_all(
+            "Journal Entry",
+            filters={"docstatus": 1, "posting_date": ["between", [fromDate, toDate]]},
+            fields=["name", "title", "posting_date", "total_debit", "total_credit"],
+            start=start, 
+            page_length=length, 
+            order_by="posting_date desc, name desc"
+        )
+
+        for entry in entries:
+            entry["type"] = ""
+
+            parts = entry["title"].split(" - ")
+            entry["title"] = parts[1]
+
+            if parts[0].startswith("4"):
+                entry["type"] = "in"
+            elif parts[0].startswith("5") or parts[0].startswith("2"):
+                entry["type"] = "out"    
+
+            entry["account"] = []
+            for account in frappe.get_all("Journal Entry Account", filters={"parent": entry["name"]}, fields=["account", "debit", "credit"]):
+                entry["account"].append(account)
+
+        return {
+            "status": "success",
+            "data": entries
+        }
+    except Exception as e:
+        frappe.log_error("Error retrieving daily report: {}".format(str(e)))
+        return {
+            "status": "error",
+            "data": "Error retrieving daily report: {}".format(str(e))
+        }
