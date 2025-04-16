@@ -678,7 +678,7 @@ def get_expenses(case):
                                       filters={"account": account}, 
                                       or_filters=[{"docstatus": 1}, {"docstatus": 2}],
                                       fields=["debit_in_account_currency", 
-                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                            #   "DATE_FORMAT(creation, '%D %M %Y') as creation", 
                                               "parent",
                                               "docstatus"], 
                                       order_by="creation desc")
@@ -696,7 +696,7 @@ def get_expenses(case):
                                       filters={"account": account}, 
                                       or_filters=[{"docstatus": 1}, {"docstatus": 2}],
                                       fields=["debit_in_account_currency", 
-                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                            #   "DATE_FORMAT(creation, '%D %M %Y') as creation", 
                                               "parent",
                                               "docstatus"], 
                                       order_by="creation desc")
@@ -714,7 +714,7 @@ def get_expenses(case):
                                       filters={"account": account},
                                       or_filters=[{"docstatus": 1}, {"docstatus": 2}], 
                                       fields=["debit_in_account_currency", 
-                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                            #   "DATE_FORMAT(creation, '%D %M %Y') as creation", 
                                               "parent",
                                               "docstatus"], 
                                       order_by="creation desc")
@@ -732,7 +732,7 @@ def get_expenses(case):
                                       filters={"account": account},
                                       or_filters=[{"docstatus": 1}, {"docstatus": 2}],
                                       fields=["debit_in_account_currency", 
-                                              "DATE_FORMAT(creation, '%D %M %Y') as creation", 
+                                            #   "DATE_FORMAT(creation, '%D %M %Y') as creation", 
                                               "parent",
                                               "docstatus"], 
                                       order_by="creation desc")
@@ -742,7 +742,7 @@ def get_expenses(case):
             return expenses
         except Exception as e:
             frappe.log_error("Error in get_expense_history: {0}".format(str(e)))
-            return []
+            return "Error retrieving expenses: {}".format(str(e))
 
 @frappe.whitelist()
 def cancel_expense(journal_entry_id):
